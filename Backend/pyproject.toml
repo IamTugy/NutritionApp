@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "nutritionapp"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["standard"], version = "^0.115.11"}
+uvicorn = "^0.34.0"
+uuid = "^1.30"
+
+
+[tool.poetry.scripts]
+start = "nutritionapp.main:start"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+isort = "^6.0.1"
+ipython = "^9.0.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
