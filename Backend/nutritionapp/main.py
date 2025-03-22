@@ -5,7 +5,8 @@ import pydantic
 import uvicorn
 from fastapi import FastAPI, Query
 
-from .models import Goals, NutritionItem, NutritionSnapshot
+from .models import (Goals, NutritionItem, NutritionSnapshot,
+                     NutritionSnapshotCreate)
 
 app = FastAPI()
 
@@ -61,16 +62,16 @@ async def get_nutrition(
 
 
 @app.post("/user/{user_id}/nutritions", response_model=NutritionSnapshot)
-async def create_nutrition(user_id: uuid.UUID, snapshot: NutritionSnapshot):
+async def create_nutrition(user_id: uuid.UUID, snapshot: NutritionSnapshotCreate):
     """Create a nutrition snapshot"""
 
     # Mock data:
     return NutritionSnapshot(
         id=uuid.uuid4(),
         user_id=user_id,
-        date=snapshot.date,
-        total_calories=snapshot.total_calories,
-        items=snapshot.items,
+        date=datetime.datetime.now(datetime.timezone.utc),
+        total_calories=len(snapshot.items) * 100,
+        items=[NutritionItem(name=item, calories=100) for item in snapshot.items],
     )
 
 
