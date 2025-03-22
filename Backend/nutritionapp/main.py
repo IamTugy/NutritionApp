@@ -91,7 +91,9 @@ async def create_nutrition(user_id: uuid.UUID, snapshot: NutritionSnapshot):
     )
 
 
-@app.delete("/user/{user_id}/nutritions/{nutrition_id}", response_model=NutritionSnapshot)
+@app.delete(
+    "/user/{user_id}/nutritions/{nutrition_id}", response_model=NutritionSnapshot
+)
 async def delete_nutrition(user_id: uuid.UUID, nutrition_id: uuid.UUID):
     """Delete a nutrition snapshot"""
 
