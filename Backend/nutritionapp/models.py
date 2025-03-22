@@ -35,7 +35,7 @@ class NutritionSnapshotCreate(pydantic.BaseModel):
     The calories consumed in the snapshot are calculated from the items with a 3rd party API
     """
 
-    user_id: uuid.UUID = pydantic.Field(description="The user's unique identifier")
+    user_id: uuid.UUID | None = pydantic.Field(description="The user's unique identifier - allows creating snapshots for other users, after checking permissions")
     items: list[str] = pydantic.Field(
         description="The list of items consumed in the snapshot"
     )
@@ -52,4 +52,12 @@ class Goals(pydantic.BaseModel):
     )
     total_calories: int | None = pydantic.Field(
         default=None, description="The total number of calories to consume in a day"
+    )
+
+class GoalsCreate(pydantic.BaseModel):
+    """Create a goal for a user"""
+
+    user_id: uuid.UUID | None = pydantic.Field(None, description="The user's unique identifier - allows changing other user's goals, after checking permissions")
+    total_calories: int | None = pydantic.Field(
+        description="The total number of calories to consume in a day"
     )
