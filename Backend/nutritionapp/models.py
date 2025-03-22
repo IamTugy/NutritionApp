@@ -30,6 +30,17 @@ class NutritionSnapshot(pydantic.BaseModel):
     )
 
 
+class NutritionSnapshotCreate(pydantic.BaseModel):
+    """Create a nutrition snapshot
+    The calories consumed in the snapshot are calculated from the items with a 3rd party API
+    """
+
+    user_id: uuid.UUID = pydantic.Field(description="The user's unique identifier")
+    items: list[str] = pydantic.Field(
+        description="The list of items consumed in the snapshot"
+    )
+
+
 class Goals(pydantic.BaseModel):
     """Goals per user, each user has one singleton goal object"""
 
