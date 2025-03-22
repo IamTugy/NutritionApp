@@ -60,6 +60,20 @@ async def get_nutrition(
     ]
 
 
+@app.post("/user/{user_id}/nutritions", response_model=NutritionSnapshot)
+async def create_nutrition(user_id: uuid.UUID, snapshot: NutritionSnapshot):
+    """Create a nutrition snapshot"""
+
+    # Mock data:
+    return NutritionSnapshot(
+        id=uuid.uuid4(),
+        user_id=user_id,
+        date=snapshot.date,
+        total_calories=snapshot.total_calories,
+        items=snapshot.items,
+    )
+
+
 @app.get("/users/{user_id}/nutritions/{nutrition_id}", response_model=NutritionSnapshot)
 async def get_nutrition_by_id(user_id: uuid.UUID, nutrition_id: uuid.UUID):
     """Get a nutrition snapshot by ID"""
@@ -74,20 +88,6 @@ async def get_nutrition_by_id(user_id: uuid.UUID, nutrition_id: uuid.UUID):
             NutritionItem(name="Apple", calories=95),
             NutritionItem(name="Banana", calories=105),
         ],
-    )
-
-
-@app.post("/user/{user_id}/nutritions", response_model=NutritionSnapshot)
-async def create_nutrition(user_id: uuid.UUID, snapshot: NutritionSnapshot):
-    """Create a nutrition snapshot"""
-
-    # Mock data:
-    return NutritionSnapshot(
-        id=uuid.uuid4(),
-        user_id=user_id,
-        date=snapshot.date,
-        total_calories=snapshot.total_calories,
-        items=snapshot.items,
     )
 
 
