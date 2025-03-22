@@ -1,5 +1,17 @@
 # NutritionApp
 
+## Tech Stack
+
+Backend: (Python)
+- FastAPI
+- Pydantic
+- MongoDB
+- Poetry
+
+Frontend:
+- React
+- D3.js
+
 ## Development
 
 To develop the backend go to the backend directory in vscode and read its README.md file.
