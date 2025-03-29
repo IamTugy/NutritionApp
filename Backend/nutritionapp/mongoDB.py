@@ -90,7 +90,12 @@ def get_last_entries(uuid, limit=50):
             {"uuid": uuid},
             {"food": 1, "calories": 1, "timestamp": 1, "_id": 0}
         ).sort("timestamp", -1).limit(limit)
-        return list(entries)
+        # Convert to list of dictionaries with datetime converted to string
+        entries_list = []
+        for entry in entries:
+            entry['timestamp'] = entry['timestamp'].strftime("%Y-%m-%d %H:%M:%S")
+            entries_list.append(entry)
+        return entries_list
     except Exception as e:
         print(f"Error getting last {limit} entries: {e}")
         return []
@@ -112,7 +117,6 @@ def insert_food_entry(uuid, food, calories, timestamp=None):
 
 def update_user_goal(uuid, new_goal):
     try:
-        # Convert goal to integer to ensure it's a number
         new_goal = int(new_goal)
         result = users_collection.update_one(
             {'uuid': uuid},
@@ -129,45 +133,44 @@ def update_user_goal(uuid, new_goal):
     except Exception as e:
         print(f"Error updating user goal: {e}")
         return False
-
-# # Example usage
-# user_id = insert_user(
-#     uuid="12345-67891",
-#     name="John Doe",
-#     email="john@example.com",
-#     age=20,
-#     phone="+1234567890",
-#     goal="weight_loss",
-#     is_coach=False,
-#     coach_uuid="coach-uuid-123"
-# )
-
-# print(f"User inserted with ID: {user_id}")
-
-# # Example usage
-# food_entry_id = insert_food_entry(
-#     uuid="12345-67890",
-#     food="banana",
-#     calories=100,
-#     timestamp=datetime.datetime(2025, 3, 29, 12, 0, 0),
     
-# )
+'''
+# Example usage
+user_id = insert_user(
+    uuid="12345-67891",
+    name="John Doe",
+    email="john@example.com",
+    age=20,
+    phone="+1234567890",
+    goal=2000,
+    is_coach=False,
+    coach_uuid="coach-uuid-123"
+)
 
-# print(f"Food entry inserted with ID: {food_entry_id}")
+# Create a food entry
+food_entry_id = insert_food_entry(
+    uuid="12345-67890",
+    food="banana",
+    calories=100,
+    timestamp=datetime.datetime(2025, 3, 29, 12, 0, 0),
+)
 
-# # For a coach
-# coach_id = insert_user(
-#     uuid="coach-uuid-123",
-#     name="Coach Smith",
-#     email="coach@example.com",
-#     age=35,
-#     phone="+1987654321",
-#     goal="help_others",
-#     is_coach=True,
-#     coached_users=["12345-67891", "12345-67890"]
-# )
-# daily_totals = get_daily_calories("12345-67890")
-# print(daily_totals)
-# last_50_entries = get_last_entries("12345-67890")
-# print(last_50_entries)
+# Create a coach
+coach_id = insert_user(
+    uuid="coach-uuid-123",
+    name="Coach Smith",
+    email="coach@example.com",
+    age=35,
+    phone="+1987654321",
+    goal=2000,
+    is_coach=True,
+    coached_users=["12345-67891", "12345-67890"]
+)
+
+daily_totals = get_daily_calories("12345-67890")
+print(daily_totals)
+
+last_entries = get_last_entries("12345-67890")
+print(last_entries)
 update_user_goal("12345-67891", 2000)
+'''
