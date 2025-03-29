@@ -23,14 +23,16 @@ food_entries_collection = db['food_entries']
 users_collection.create_index('uuid', unique=True)
 
 # Example of how to insert a user document
-def insert_user(uuid, name, email, age, phone, goal):
+def insert_user(uuid, name, email, age, phone, goal, is_coach, coach_uuid=None, coached_users=None):
     user_document = {
         'uuid': uuid,
         'name': name,
         'email': email,
         'age': age,
         'phone': phone,
-        'goal': goal
+        'goal': goal,
+        'is_coach': is_coach,
+        'coach_data': coached_users if is_coach else coach_uuid
     }
     try:
         result = users_collection.insert_one(user_document)
@@ -73,8 +75,11 @@ user_id = insert_user(
     uuid="12345-67890",
     name="John Doe",
     email="john@example.com",
-    birthday="1990-01-01",
-    phone="+1234567890"
+    age=30,
+    phone="+1234567890",
+    goal="weight_loss",
+    is_coach=False,
+    coach_uuid="coach-uuid-123"
 )
 
 print(f"User inserted with ID: {user_id}")
@@ -85,6 +90,19 @@ food_entry_id = insert_food_entry(
     food="Apple",
     calories=95,
     timestamp=datetime.datetime(2025, 3, 29, 12, 0, 0),
+    
 )
 
 print(f"Food entry inserted with ID: {food_entry_id}")
+
+# For a coach
+coach_id = insert_user(
+    uuid="coach-uuid-123",
+    name="Coach Smith",
+    email="coach@example.com",
+    age=35,
+    phone="+1987654321",
+    goal="help_others",
+    is_coach=True,
+    coached_users=["12345-67890", "another-user-uuid"]
+)
