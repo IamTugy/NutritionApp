@@ -5,8 +5,13 @@ import pydantic
 import uvicorn
 from fastapi import FastAPI, Query
 
-from .models import (Goals, GoalsCreate, NutritionItem, NutritionSnapshot,
-                     NutritionSnapshotCreate)
+from .models import (
+    Goals,
+    GoalsCreate,
+    NutritionItem,
+    NutritionSnapshot,
+    NutritionSnapshotCreate,
+)
 
 app = FastAPI()
 
