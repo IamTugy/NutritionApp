@@ -6,11 +6,14 @@ import pydantic
 
 class NutritionItem(pydantic.BaseModel):
     """An item consumed by the user"""
-
-    name: str = pydantic.Field(
+    food_name: str = pydantic.Field(
         description="The name of the item", examples=["Apple", "Banana"]
     )
-    calories: int = pydantic.Field(description="The number of calories in the item")
+    calories: float = pydantic.Field(description="The number of calories in the item")
+    protein: float = pydantic.Field(default=0.0, description="The number of protein in the item")
+    fat: float = pydantic.Field(default=0.0, description="The number of fat in the item")
+    carbohydrates: float = pydantic.Field(default=0.0, description="The number of carbohydrates in the item")
+    fiber: float = pydantic.Field(default=0.0, description="The number of fiber in the item")
 
 
 class NutritionSnapshot(pydantic.BaseModel):
