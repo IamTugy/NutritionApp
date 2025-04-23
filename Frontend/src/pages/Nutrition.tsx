@@ -44,7 +44,7 @@ export function Nutrition() {
         <h1 className="text-2xl font-bold text-gray-900">Nutrition Tracking</h1>
         <button
           onClick={() => setIsAdding(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer"
         >
           Add Food
         </button>
@@ -67,13 +67,13 @@ export function Nutrition() {
             <div className="flex justify-end space-x-2">
               <button
                 onClick={() => setIsAdding(false)}
-                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleAddFood}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer"
               >
                 Add
               </button>

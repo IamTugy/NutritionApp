@@ -87,7 +87,7 @@ export function Trainers() {
                     </div>
                   </div>
                 </div>
-                <button className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                <button className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer">
                   Connect
                 </button>
               </div>

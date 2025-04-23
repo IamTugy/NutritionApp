@@ -68,7 +68,7 @@ export function FoodSearch() {
                 </div>
               </div>
               <button className={cn(
-                'mt-4 w-full px-4 py-2 rounded-md',
+                'mt-4 w-full px-4 py-2 rounded-md cursor-pointer',
                 'bg-blue-500 text-white hover:bg-blue-600'
               )}>
                 Add to Meal
