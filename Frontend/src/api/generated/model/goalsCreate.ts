@@ -6,6 +6,8 @@
  */
 import type { GoalsCreateUserId } from './goalsCreateUserId'
 import type { GoalsCreateTotalCalories } from './goalsCreateTotalCalories'
+import type { GoalsCreateTotalProtein } from './goalsCreateTotalProtein'
+import type { GoalsCreateTotalWaterIntake } from './goalsCreateTotalWaterIntake'
 
 /**
  * Create a goal for a user
@@ -14,5 +16,9 @@ export interface GoalsCreate {
   /** The user's unique identifier - allows changing other user's goals, after checking permissions */
   user_id?: GoalsCreateUserId
   /** The total number of calories to consume in a day */
-  total_calories: GoalsCreateTotalCalories
+  total_calories?: GoalsCreateTotalCalories
+  /** The total number of protein to consume in a day */
+  total_protein?: GoalsCreateTotalProtein
+  /** The total number of water to consume in a day */
+  total_water_intake?: GoalsCreateTotalWaterIntake
 }

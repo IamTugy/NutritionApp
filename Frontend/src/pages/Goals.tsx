@@ -2,44 +2,62 @@ import type { Goals, NutritionSnapshot } from '@/api/generated/model';
 import { useGetGoalsUserUserIdGoalsGet, useUpdateGoalsUserUserIdGoalsPut } from '../api/generated/fastAPI';
 import { useAuth0 } from '@auth0/auth0-react';
 import { GoalCard } from '../components/goals/GoalCard';
-import { useNutrition } from '@/hooks/useNutrition';
 import { LoadingSpinner } from '../components/loading/LoadingSpinner';
+import { useNutritionAggregation } from '@/hooks/useNutritionAggregation';
 
 export function Goals() {
   const { user } = useAuth0();
   const { data: goalsData, isLoading: isLoadingGoals } = useGetGoalsUserUserIdGoalsGet(user?.sub || '');
   const { mutate: updateGoals } = useUpdateGoalsUserUserIdGoalsPut();
 
-  const { data: nutritionData, isLoading: isLoadingNutrition } = useNutrition(user?.sub || null, 1);
+  const { data, isLoading } = useNutritionAggregation(user?.sub || null, 1);
 
-  if (isLoadingGoals || isLoadingNutrition) {
+  if (isLoadingGoals || isLoading) {
     return <LoadingSpinner />;
   }
 
-  const handleUpdateGoal = (newValue: number) => {
+  const handleUpdateGoal = (type: 'total_calories' | 'total_protein' | 'total_water_intake', value: number) => {
     updateGoals({
       userId: user?.sub || '',
       data: {
-        total_calories: newValue,
+        [type]: value,
       },
     });
   };
 
   const goal = goalsData ? (goalsData as Goals[])[0] : null;
-  const todayCalories = (nutritionData as NutritionSnapshot[] || []).reduce(
-    (sum: number, item: NutritionSnapshot) => sum + item.total_calories,
-    0
-  );
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-900">Goals</h1>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <GoalCard
           goal={goal}
-          currentValue={todayCalories}
+          currentValue={data[0].total_calories}
           onUpdateGoal={handleUpdateGoal}
+          type="total_calories"
+          title="Calories"
+          unit="calories"
+          color="bg-blue-600"
+        />
+        <GoalCard
+          goal={goal}
+          currentValue={data[0].total_protein}
+          onUpdateGoal={handleUpdateGoal}
+          type="total_protein"
+          title="Protein"
+          unit="g"
+          color="bg-green-600"
+        />
+        <GoalCard
+          goal={goal}
+          currentValue={data[0].total_water}
+          onUpdateGoal={handleUpdateGoal}
+          type="total_water_intake"
+          title="Water"
+          unit="L"
+          color="bg-blue-400"
         />
       </div>
     </div>

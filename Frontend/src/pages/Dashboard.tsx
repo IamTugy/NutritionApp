@@ -10,10 +10,12 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { useGetNutritionUsersUserIdNutritionsGet } from '../api/generated/fastAPI';
+import { useGetGoalsUserUserIdGoalsGet, useGetNutritionUsersUserIdNutritionsGet } from '../api/generated/fastAPI';
 import { useAuth0 } from '@auth0/auth0-react';
-import { useNutrition } from '@/hooks/useNutrition';
 import { LoadingSpinner } from '../components/loading/LoadingSpinner';
+import { useNutritionAggregation } from '@/hooks/useNutritionAggregation';
+import { useMemo } from 'react';
+import { useNutrition } from '@/hooks/useNutrition';
 
 ChartJS.register(
   CategoryScale,
@@ -27,13 +29,15 @@ ChartJS.register(
 
 export function Dashboard() {
   const { user } = useAuth0();
-  const { data, isLoading } = useNutrition(user?.sub || null);
+  const { data, isLoading } = useNutritionAggregation(user?.sub || null, 7);
+  const { data: goalsData, isLoading: isLoadingGoals } = useGetGoalsUserUserIdGoalsGet(user?.sub || '');
+  const { data: todaysNutritionData, isLoading: isLoadingTodaysNutrition } = useNutritionAggregation(user?.sub || null, 1);
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
+  const myGoals = useMemo(() => {
+    return goalsData?.filter(g => g.user_id === user?.sub)?.[0];
+  }, [goalsData, user?.sub]);
 
-  const chartData = {
+  const chartData = useMemo(() => ({
     labels: data.map(n => new Date(n.date).toLocaleDateString()),
     datasets: [
       {
@@ -44,15 +48,16 @@ export function Dashboard() {
       },
       {
         label: 'Protein (g)',
-        data: data.map(n => n.items.reduce((sum: number, item) => sum + (item.protein || 0), 0)),
+        data: data.map(n => n.total_protein),
         borderColor: 'rgb(255, 99, 132)',
         tension: 0.1,
       },
     ],
-  };
+  }), [data]);
 
-  const latestNutrition = data[0];
-  const totalProtein = latestNutrition?.items.reduce((sum: number, item) => sum + (item.protein || 0), 0) || 0;
+  if (isLoading || isLoadingGoals || isLoadingTodaysNutrition) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="space-y-6">
@@ -61,18 +66,18 @@ export function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-2">Today's Calories</h3>
-          <p className="text-3xl font-bold text-blue-600">{latestNutrition?.total_calories || 0}</p>
-          <p className="text-sm text-gray-500">Goal: 2,000</p>
+          <p className="text-3xl font-bold text-blue-600">{todaysNutritionData[0].total_calories}</p>
+          <p className="text-sm text-gray-500">Goal: {myGoals?.total_calories || 'N/A'}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-2">Protein Intake</h3>
-          <p className="text-3xl font-bold text-green-600">{totalProtein}g</p>
-          <p className="text-sm text-gray-500">Goal: 150g</p>
+          <p className="text-3xl font-bold text-green-600">{todaysNutritionData[0].total_protein}g</p>
+          <p className="text-sm text-gray-500">Goal: {myGoals?.total_protein ? `${myGoals.total_protein}g` : 'N/A'}</p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-semibold mb-2">Water Intake</h3>
-          <p className="text-3xl font-bold text-blue-400">0L</p>
-          <p className="text-sm text-gray-500">Goal: 2.5L</p>
+          <p className="text-3xl font-bold text-blue-400">{todaysNutritionData[0].total_water}L</p>
+          <p className="text-sm text-gray-500">Goal: {myGoals?.total_water_intake ? `${myGoals.total_water_intake}L` : 'N/A'}</p>
         </div>
       </div>
 

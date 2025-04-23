@@ -126,15 +126,43 @@ async def get_goals(user_id: str):
 @app.put("/user/{user_id}/goals", response_model=Goals)
 async def update_goals(user_id: str, goals: GoalsCreate):
     """Updates the goals for a specific user."""
-    goal_id = uuid.uuid4()
-    new_goal = Goals(
-        id=goal_id,
-        user_id=goals.user_id or user_id,
-        updated_at=datetime.now(timezone.utc),
-        total_calories=goals.total_calories,
-    )
-    await database.goals.replace_one({"user_id": user_id}, new_goal.model_dump(), upsert=True)
-    return new_goal
+    # Get existing goal or create new one
+    existing_goal = await database.goals.find_one({"user_id": user_id})
+    
+    if existing_goal:
+        # Update only non-empty fields
+        update_data = {}
+        if goals.total_protein is not None:
+            update_data["total_protein"] = goals.total_protein
+        if goals.total_water_intake is not None:
+            update_data["total_water_intake"] = goals.total_water_intake
+        if goals.total_calories is not None:
+            update_data["total_calories"] = goals.total_calories
+        
+        if update_data:
+            update_data["updated_at"] = datetime.now(timezone.utc)
+            
+            await database.goals.update_one(
+                {"user_id": user_id},
+                {"$set": update_data}
+            )
+            # Get updated goal
+            updated_goal = await database.goals.find_one({"user_id": user_id})
+            return Goals.model_validate(updated_goal)
+        return Goals.model_validate(existing_goal)
+    else:
+        # Create new goal if none exists
+        goal_id = uuid.uuid4()
+        new_goal = Goals(
+            id=goal_id,
+            user_id=goals.user_id or user_id,
+            updated_at=datetime.now(timezone.utc),
+            total_calories=goals.total_calories,
+            total_protein=goals.total_protein,
+            total_water_intake=goals.total_water_intake,
+        )
+        await database.goals.insert_one(new_goal.model_dump())
+        return new_goal
 
 def start():
     """Starts the FastAPI application."""

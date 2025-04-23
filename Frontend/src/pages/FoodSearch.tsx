@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import { useSearchFoodSearchGet } from '../api/generated/fastAPI';
-import { useDebounce } from '../hooks/useDebounce';
 import { cn } from '../utils/tw';
+import { LoadingSpinner } from '@/components/loading/LoadingSpinner';
 
 export function FoodSearch() {
   const [searchQuery, setSearchQuery] = useState('');
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const [query, setQuery] = useState('');
 
   const { data, isLoading } = useSearchFoodSearchGet(
-    { query: debouncedSearchQuery },
+    { query },
     {
       query: {
-        enabled: debouncedSearchQuery.length > 0,
-        initialData: [],
-        refetchOnMount: true,
+        enabled: query.length > 0,
       },
     }
   );
@@ -27,6 +25,11 @@ export function FoodSearch() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setQuery(searchQuery);
+            }
+          }}
           placeholder="Search for foods..."
           className={cn(
             'w-full p-4 border border-gray-300 rounded-lg',
@@ -36,7 +39,7 @@ export function FoodSearch() {
       </div>
 
       {isLoading ? (
-        <div>Loading...</div>
+        <LoadingSpinner />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {data?.map((food) => (
@@ -58,6 +61,10 @@ export function FoodSearch() {
                 <div>
                   <p className="text-sm text-gray-600">Fat</p>
                   <p className="font-semibold">{food.fat || 0}g</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">Water</p>
+                  <p className="font-semibold">{food.water || 0}L</p>
                 </div>
               </div>
               <button className={cn(

@@ -15,7 +15,9 @@ export function Sidebar() {
     <>
       <div
         className={cn(
-          'w-64 bg-white shadow-lg h-[calc(100vh-64px)] z-50 fixed top-16 left-0',
+          'w-64 bg-white shadow-lg h-[calc(100vh-64px)] z-50',
+          'md:relative md:translate-x-0 md:top-0 md:left-0',
+          'fixed top-16 left-0',
           'transform transition-transform duration-300 ease-in-out',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}

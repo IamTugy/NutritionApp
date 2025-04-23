@@ -13,12 +13,13 @@ interface AggregatedNutrition {
 }
 
 export function useNutritionAggregation(
-    user_id: string | null
+    user_id: string | null,
+    days: number = 7
 ) {
-  const { data, isLoading } = useNutrition(user_id);
+  const { data, isLoading } = useNutrition(user_id, days);
 
   // Group nutrition data by date
-  const aggregatedData = data.reduce((acc: Record<string, AggregatedNutrition>, snapshot) => {
+  const aggregatedData = data?.reduce((acc: Record<string, AggregatedNutrition>, snapshot) => {
     const date = new Date(snapshot.date).toISOString().split('T')[0];
     
     if (!acc[date]) {
@@ -40,13 +41,13 @@ export function useNutritionAggregation(
   }, {});
 
   // Convert to array and sort by date
-  const sortedData = Object.values(aggregatedData).sort((a, b) => 
+  const sortedData = Object.values(aggregatedData || {}).sort((a, b) => 
     new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
   // Get today's data
   const today = new Date().toISOString().split('T')[0];
-  const todayData = aggregatedData[today] || {
+  const todayData = aggregatedData?.[today] || {
     date: today,
     total_calories: 0,
     total_protein: 0,

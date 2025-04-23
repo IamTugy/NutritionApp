@@ -61,10 +61,9 @@ class Goals(BaseModel):
     total_protein: int | None = Field(
         default=None, description="The total number of protein to consume in a day"
     )
-    total_water_intake: int | None = Field(
+    total_water_intake: float | None = Field(
         default=None, description="The total number of water to consume in a day"
     )
-    
 
 
 class GoalsCreate(BaseModel):
@@ -75,5 +74,11 @@ class GoalsCreate(BaseModel):
         description="The user's unique identifier - allows changing other user's goals, after checking permissions",
     )
     total_calories: int | None = Field(
-        description="The total number of calories to consume in a day"
+        default=None, description="The total number of calories to consume in a day"
+    )
+    total_protein: int | None = Field(
+        default=None, description="The total number of protein to consume in a day"
+    )
+    total_water_intake: float | None = Field(
+        default=None, description="The total number of water to consume in a day"
     )

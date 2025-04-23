@@ -11,10 +11,4 @@ export const useNutrition = (
       start_date: startOfDay(subDays(new Date(), days)).toISOString(),
       end_date: endOfDay(new Date()).toISOString(),
     },
-    {
-      query: {
-        initialData: [],
-        refetchOnMount: true,
-      },
-    }
   )
