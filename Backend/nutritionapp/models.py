@@ -13,6 +13,7 @@ class NutritionItem(BaseModel):
     fat: float = Field(default=0.0, description="The number of fat in the item")
     carbohydrates: float = Field(default=0.0, description="The number of carbohydrates in the item")
     fiber: float = Field(default=0.0, description="The number of fiber in the item")
+    water: float = Field(default=0.0, description="The number of water in the item in grams")
 
 
 class NutritionSnapshot(BaseModel):
@@ -57,6 +58,13 @@ class Goals(BaseModel):
     total_calories: int | None = Field(
         default=None, description="The total number of calories to consume in a day"
     )
+    total_protein: int | None = Field(
+        default=None, description="The total number of protein to consume in a day"
+    )
+    total_water_intake: int | None = Field(
+        default=None, description="The total number of water to consume in a day"
+    )
+    
 
 
 class GoalsCreate(BaseModel):

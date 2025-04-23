@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
 import { Line } from 'react-chartjs-2';
+import { startOfDay, endOfDay, subDays } from 'date-fns'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,7 +12,8 @@ import {
 } from 'chart.js';
 import { useGetNutritionUsersUserIdNutritionsGet } from '../api/generated/fastAPI';
 import { useAuth0 } from '@auth0/auth0-react';
-import type { NutritionSnapshot } from '../api/generated/model/nutritionSnapshot';
+import { useNutrition } from '@/hooks/useNutrition';
+import { LoadingSpinner } from '../components/loading/LoadingSpinner';
 
 ChartJS.register(
   CategoryScale,
@@ -26,43 +27,31 @@ ChartJS.register(
 
 export function Dashboard() {
   const { user } = useAuth0();
-  const { data, isLoading } = useGetNutritionUsersUserIdNutritionsGet(
-    user?.sub || '',
-    // {
-    //   start_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    //   end_date: new Date().toISOString(),
-    // }
-  );
+  const { data, isLoading } = useNutrition(user?.sub || null);
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-screen">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-    </div>
+    return <LoadingSpinner />;
   }
 
-  const nutritionData = (data?.data || []) as NutritionSnapshot[];
-
-  console.log(nutritionData);
-
   const chartData = {
-    labels: nutritionData.map(n => new Date(n.date).toLocaleDateString()),
+    labels: data.map(n => new Date(n.date).toLocaleDateString()),
     datasets: [
       {
         label: 'Calories',
-        data: nutritionData.map(n => n.total_calories),
+        data: data.map(n => n.total_calories),
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1,
       },
       {
         label: 'Protein (g)',
-        data: nutritionData.map(n => n.items.reduce((sum: number, item) => sum + (item.protein || 0), 0)),
+        data: data.map(n => n.items.reduce((sum: number, item) => sum + (item.protein || 0), 0)),
         borderColor: 'rgb(255, 99, 132)',
         tension: 0.1,
       },
     ],
   };
 
-  const latestNutrition = nutritionData[0];
+  const latestNutrition = data[0];
   const totalProtein = latestNutrition?.items.reduce((sum: number, item) => sum + (item.protein || 0), 0) || 0;
 
   return (

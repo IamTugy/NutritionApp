@@ -21,4 +21,6 @@ export interface NutritionItem {
   carbohydrates?: number
   /** The number of fiber in the item */
   fiber?: number
+  /** The number of water in the item in grams */
+  water?: number
 }

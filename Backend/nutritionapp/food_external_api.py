@@ -11,9 +11,10 @@ BASE_URL = "https://api.nal.usda.gov/fdc/v1"
 NUTRITION_FIELD_TO_ID = {
     "calories": 1008,  # Energy
     "protein": 1003,  # Protein
-    "fat": 1004,     # Total lipid (fat)
+    "fat": 1004,  # Total lipid (fat)
     "carbohydrates": 1005,  # Carbohydrate, by difference
-    "fiber": 1079,   # Fiber, total dietary
+    "fiber": 1079,  # Fiber, total dietary
+    "water": 1051,  # Water
 }
 
 
@@ -76,6 +77,8 @@ async def search_nutrition_items(query: str) -> list[NutritionItem]:
             protein=nutritions.get("protein", 0.0),
             fat=nutritions.get("fat", 0.0),
             carbohydrates=nutritions.get("carbohydrates", 0.0),
+            fiber=nutritions.get("fiber", 0.0),
+            water=nutritions.get("water", 0.0),
         ))
 
     return search_results
@@ -111,4 +114,5 @@ async def search_nutrition_item(query: str) -> NutritionItem | None:
         fat=nutritions.get("fat", 0.0),
         carbohydrates=nutritions.get("carbohydrates", 0.0),
         fiber=nutritions.get("fiber", 0.0),
+        water=nutritions.get("water", 0.0),
     )

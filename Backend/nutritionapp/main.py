@@ -113,15 +113,15 @@ async def delete_nutrition(user_id: str, nutrition_id: uuid.UUID):
     
     return NutritionSnapshot.model_validate(snapshot)
 
-@app.get("/user/{user_id}/goals", response_model=Goals)
+@app.get("/user/{user_id}/goals", response_model=list[Goals])
 async def get_goals(user_id: str):
     """Fetches the goals for a specific user."""
-    goal = await database.goals.find_one({"user_id": user_id})
+    goals = await database.goals.find_one({"user_id": user_id})
 
-    if not goal:
-        raise HTTPException(status_code=404, detail="Goals not found")
+    if not goals:
+        return []
     
-    return Goals.model_validate(goal)
+    return [Goals.model_validate(goals)]
 
 @app.put("/user/{user_id}/goals", response_model=Goals)
 async def update_goals(user_id: str, goals: GoalsCreate):

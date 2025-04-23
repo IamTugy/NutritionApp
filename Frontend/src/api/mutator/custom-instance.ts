@@ -5,23 +5,23 @@ interface CancellablePromise<T> extends Promise<T> {
   cancel: () => void;
 }
 
-export const customInstance = axios.create({
+const axiosInstance = axios.create({
   baseURL: '/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-export const customInstanceWithConfig = <T>(
+export const customInstance = <T>(
   config: AxiosRequestConfig,
   options?: AxiosRequestConfig,
 ): CancellablePromise<T> => {
   const source = axios.CancelToken.source();
-  const promise = axios({
+  const promise = axiosInstance({
     ...config,
     ...options,
     cancelToken: source.token,
-  }).then(({ data }: { data: T }) => data) as CancellablePromise<T>;
+  }).then(({ data }) => data) as CancellablePromise<T>;
 
   promise.cancel = () => {
     source.cancel('Query was cancelled');

@@ -4,16 +4,20 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query'
 import type {
   DataTag,
   DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -51,6 +55,150 @@ export const getReadRootGetQueryKey = () => {
   return [`/`] as const
 }
 
+export const getReadRootGetInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof readRootGet>>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: Partial<
+    UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof readRootGet>>,
+      TError,
+      TData
+    >
+  >
+  request?: SecondParameter<typeof customInstance>
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey = queryOptions?.queryKey ?? getReadRootGetQueryKey()
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof readRootGet>>> = ({
+    signal,
+  }) => readRootGet(requestOptions, signal)
+
+  return {
+    queryKey,
+    queryFn,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof readRootGet>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ReadRootGetInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof readRootGet>>
+>
+export type ReadRootGetInfiniteQueryError = ErrorType<unknown>
+
+export function useReadRootGetInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof readRootGet>>>,
+  TError = ErrorType<unknown>,
+>(
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof readRootGet>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof readRootGet>>,
+          TError,
+          Awaited<ReturnType<typeof readRootGet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useReadRootGetInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof readRootGet>>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof readRootGet>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof readRootGet>>,
+          TError,
+          Awaited<ReturnType<typeof readRootGet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useReadRootGetInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof readRootGet>>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof readRootGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+/**
+ * @summary Read Root
+ */
+
+export function useReadRootGetInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof readRootGet>>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof readRootGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getReadRootGetInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
 export const getReadRootGetQueryOptions = <
   TData = Awaited<ReturnType<typeof readRootGet>>,
   TError = ErrorType<unknown>,
@@ -68,7 +216,12 @@ export const getReadRootGetQueryOptions = <
     signal,
   }) => readRootGet(requestOptions, signal)
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+  return {
+    queryKey,
+    queryFn,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseQueryOptions<
     Awaited<ReturnType<typeof readRootGet>>,
     TError,
     TData
@@ -189,6 +342,204 @@ export const getSearchFoodSearchGetQueryKey = (
   return [`/search`, ...(params ? [params] : [])] as const
 }
 
+export const getSearchFoodSearchGetInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof searchFoodSearchGet>>,
+    SearchFoodSearchGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  params: SearchFoodSearchGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        QueryKey,
+        SearchFoodSearchGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey =
+    queryOptions?.queryKey ?? getSearchFoodSearchGetQueryKey(params)
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof searchFoodSearchGet>>,
+    QueryKey,
+    SearchFoodSearchGetParams['page']
+  > = ({ signal, pageParam }) =>
+    searchFoodSearchGet(
+      { ...params, page: pageParam || params?.['page'] },
+      requestOptions,
+      signal,
+    )
+
+  return {
+    queryKey,
+    queryFn,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof searchFoodSearchGet>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof searchFoodSearchGet>>,
+    QueryKey,
+    SearchFoodSearchGetParams['page']
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SearchFoodSearchGetInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchFoodSearchGet>>
+>
+export type SearchFoodSearchGetInfiniteQueryError =
+  ErrorType<HTTPValidationError>
+
+export function useSearchFoodSearchGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof searchFoodSearchGet>>,
+    SearchFoodSearchGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  params: SearchFoodSearchGetParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        QueryKey,
+        SearchFoodSearchGetParams['page']
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchFoodSearchGet>>,
+          TError,
+          Awaited<ReturnType<typeof searchFoodSearchGet>>,
+          QueryKey
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useSearchFoodSearchGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof searchFoodSearchGet>>,
+    SearchFoodSearchGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  params: SearchFoodSearchGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        QueryKey,
+        SearchFoodSearchGetParams['page']
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchFoodSearchGet>>,
+          TError,
+          Awaited<ReturnType<typeof searchFoodSearchGet>>,
+          QueryKey
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useSearchFoodSearchGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof searchFoodSearchGet>>,
+    SearchFoodSearchGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  params: SearchFoodSearchGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        QueryKey,
+        SearchFoodSearchGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+/**
+ * @summary Search Food
+ */
+
+export function useSearchFoodSearchGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof searchFoodSearchGet>>,
+    SearchFoodSearchGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  params: SearchFoodSearchGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof searchFoodSearchGet>>,
+        QueryKey,
+        SearchFoodSearchGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getSearchFoodSearchGetInfiniteQueryOptions(
+    params,
+    options,
+  )
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
 export const getSearchFoodSearchGetQueryOptions = <
   TData = Awaited<ReturnType<typeof searchFoodSearchGet>>,
   TError = ErrorType<HTTPValidationError>,
@@ -214,7 +565,12 @@ export const getSearchFoodSearchGetQueryOptions = <
     Awaited<ReturnType<typeof searchFoodSearchGet>>
   > = ({ signal }) => searchFoodSearchGet(params, requestOptions, signal)
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+  return {
+    queryKey,
+    queryFn,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseQueryOptions<
     Awaited<ReturnType<typeof searchFoodSearchGet>>,
     TError,
     TData
@@ -357,6 +713,213 @@ export const getGetNutritionUsersUserIdNutritionsGetQueryKey = (
   return [`/users/${userId}/nutritions`, ...(params ? [params] : [])] as const
 }
 
+export const getGetNutritionUsersUserIdNutritionsGetInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+    GetNutritionUsersUserIdNutritionsGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetNutritionUsersUserIdNutritionsGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        QueryKey,
+        GetNutritionUsersUserIdNutritionsGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGetNutritionUsersUserIdNutritionsGetQueryKey(userId, params)
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+    QueryKey,
+    GetNutritionUsersUserIdNutritionsGetParams['page']
+  > = ({ signal, pageParam }) =>
+    getNutritionUsersUserIdNutritionsGet(
+      userId,
+      { ...params, page: pageParam || params?.['page'] },
+      requestOptions,
+      signal,
+    )
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+    QueryKey,
+    GetNutritionUsersUserIdNutritionsGetParams['page']
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetNutritionUsersUserIdNutritionsGetInfiniteQueryResult =
+  NonNullable<Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>>
+export type GetNutritionUsersUserIdNutritionsGetInfiniteQueryError =
+  ErrorType<HTTPValidationError>
+
+export function useGetNutritionUsersUserIdNutritionsGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+    GetNutritionUsersUserIdNutritionsGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params: undefined | GetNutritionUsersUserIdNutritionsGetParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        QueryKey,
+        GetNutritionUsersUserIdNutritionsGetParams['page']
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+          QueryKey
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetNutritionUsersUserIdNutritionsGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+    GetNutritionUsersUserIdNutritionsGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetNutritionUsersUserIdNutritionsGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        QueryKey,
+        GetNutritionUsersUserIdNutritionsGetParams['page']
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+          QueryKey
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetNutritionUsersUserIdNutritionsGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+    GetNutritionUsersUserIdNutritionsGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetNutritionUsersUserIdNutritionsGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        QueryKey,
+        GetNutritionUsersUserIdNutritionsGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+/**
+ * @summary Get Nutrition
+ */
+
+export function useGetNutritionUsersUserIdNutritionsGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+    GetNutritionUsersUserIdNutritionsGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetNutritionUsersUserIdNutritionsGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
+        QueryKey,
+        GetNutritionUsersUserIdNutritionsGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions =
+    getGetNutritionUsersUserIdNutritionsGetInfiniteQueryOptions(
+      userId,
+      params,
+      options,
+    )
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
 export const getGetNutritionUsersUserIdNutritionsGetQueryOptions = <
   TData = Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
   TError = ErrorType<HTTPValidationError>,
@@ -389,6 +952,7 @@ export const getGetNutritionUsersUserIdNutritionsGetQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!userId,
+    staleTime: 10000,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getNutritionUsersUserIdNutritionsGet>>,
@@ -643,6 +1207,236 @@ export const getGetNutritionByIdUsersUserIdNutritionsNutritionIdGetQueryKey = (
   return [`/users/${userId}/nutritions/${nutritionId}`] as const
 }
 
+export const getGetNutritionByIdUsersUserIdNutritionsNutritionIdGetInfiniteQueryOptions =
+  <
+    TData = InfiniteData<
+      Awaited<
+        ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+      >
+    >,
+    TError = ErrorType<HTTPValidationError>,
+  >(
+    userId: string,
+    nutritionId: string,
+    options?: {
+      query?: Partial<
+        UseInfiniteQueryOptions<
+          Awaited<
+            ReturnType<
+              typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet
+            >
+          >,
+          TError,
+          TData
+        >
+      >
+      request?: SecondParameter<typeof customInstance>
+    },
+  ) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {}
+
+    const queryKey =
+      queryOptions?.queryKey ??
+      getGetNutritionByIdUsersUserIdNutritionsNutritionIdGetQueryKey(
+        userId,
+        nutritionId,
+      )
+
+    const queryFn: QueryFunction<
+      Awaited<
+        ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+      >
+    > = ({ signal }) =>
+      getNutritionByIdUsersUserIdNutritionsNutritionIdGet(
+        userId,
+        nutritionId,
+        requestOptions,
+        signal,
+      )
+
+    return {
+      queryKey,
+      queryFn,
+      enabled: !!(userId && nutritionId),
+      staleTime: 10000,
+      ...queryOptions,
+    } as UseInfiniteQueryOptions<
+      Awaited<
+        ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+      >,
+      TError,
+      TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> }
+  }
+
+export type GetNutritionByIdUsersUserIdNutritionsNutritionIdGetInfiniteQueryResult =
+  NonNullable<
+    Awaited<
+      ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+    >
+  >
+export type GetNutritionByIdUsersUserIdNutritionsNutritionIdGetInfiniteQueryError =
+  ErrorType<HTTPValidationError>
+
+export function useGetNutritionByIdUsersUserIdNutritionsNutritionIdGetInfinite<
+  TData = InfiniteData<
+    Awaited<
+      ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+    >
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  nutritionId: string,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<
+          ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+        >,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet
+            >
+          >,
+          TError,
+          Awaited<
+            ReturnType<
+              typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet
+            >
+          >
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetNutritionByIdUsersUserIdNutritionsNutritionIdGetInfinite<
+  TData = InfiniteData<
+    Awaited<
+      ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+    >
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  nutritionId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<
+          ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+        >,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<
+            ReturnType<
+              typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet
+            >
+          >,
+          TError,
+          Awaited<
+            ReturnType<
+              typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet
+            >
+          >
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetNutritionByIdUsersUserIdNutritionsNutritionIdGetInfinite<
+  TData = InfiniteData<
+    Awaited<
+      ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+    >
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  nutritionId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<
+          ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+        >,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+/**
+ * @summary Get Nutrition By Id
+ */
+
+export function useGetNutritionByIdUsersUserIdNutritionsNutritionIdGetInfinite<
+  TData = InfiniteData<
+    Awaited<
+      ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+    >
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  nutritionId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<
+          ReturnType<typeof getNutritionByIdUsersUserIdNutritionsNutritionIdGet>
+        >,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions =
+    getGetNutritionByIdUsersUserIdNutritionsNutritionIdGetInfiniteQueryOptions(
+      userId,
+      nutritionId,
+      options,
+    )
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
 export const getGetNutritionByIdUsersUserIdNutritionsNutritionIdGetQueryOptions =
   <
     TData = Awaited<
@@ -692,6 +1486,7 @@ export const getGetNutritionByIdUsersUserIdNutritionsNutritionIdGetQueryOptions 
       queryKey,
       queryFn,
       enabled: !!(userId && nutritionId),
+      staleTime: 10000,
       ...queryOptions,
     } as UseQueryOptions<
       Awaited<
@@ -975,7 +1770,7 @@ export const getGoalsUserUserIdGoalsGet = (
   options?: SecondParameter<typeof customInstance>,
   signal?: AbortSignal,
 ) => {
-  return customInstance<Goals>(
+  return customInstance<Goals[]>(
     { url: `/user/${userId}/goals`, method: 'GET', signal },
     options,
   )
@@ -983,6 +1778,163 @@ export const getGoalsUserUserIdGoalsGet = (
 
 export const getGetGoalsUserUserIdGoalsGetQueryKey = (userId: string) => {
   return [`/user/${userId}/goals`] as const
+}
+
+export const getGetGoalsUserUserIdGoalsGetInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey =
+    queryOptions?.queryKey ?? getGetGoalsUserUserIdGoalsGetQueryKey(userId)
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>
+  > = ({ signal }) => getGoalsUserUserIdGoalsGet(userId, requestOptions, signal)
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetGoalsUserUserIdGoalsGetInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>
+>
+export type GetGoalsUserUserIdGoalsGetInfiniteQueryError =
+  ErrorType<HTTPValidationError>
+
+export function useGetGoalsUserUserIdGoalsGetInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetGoalsUserUserIdGoalsGetInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>,
+          TError,
+          Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetGoalsUserUserIdGoalsGetInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+/**
+ * @summary Get Goals
+ */
+
+export function useGetGoalsUserUserIdGoalsGetInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getGetGoalsUserUserIdGoalsGetInfiniteQueryOptions(
+    userId,
+    options,
+  )
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
 }
 
 export const getGetGoalsUserUserIdGoalsGetQueryOptions = <
@@ -1014,6 +1966,7 @@ export const getGetGoalsUserUserIdGoalsGetQueryOptions = <
     queryKey,
     queryFn,
     enabled: !!userId,
+    staleTime: 10000,
     ...queryOptions,
   } as UseQueryOptions<
     Awaited<ReturnType<typeof getGoalsUserUserIdGoalsGet>>,

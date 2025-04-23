@@ -72,7 +72,6 @@ To create a comprehensive nutrition tracking platform that empowers users to ach
 - React with TypeScript
 - TanStack Query for data fetching
 - TanStack Router for navigation
-- TanStack Virtualizer for performance
 - Tailwind CSS for styling
 - Orval for API client generation
 

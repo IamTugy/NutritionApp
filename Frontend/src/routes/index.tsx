@@ -1,22 +1,22 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
-import { checkAuth } from '../utils/auth'
 
 export const Route = createFileRoute('/')({
   beforeLoad: () => {
-    const authResult = checkAuth();
-    if (authResult === true) {
+    const isAuthenticated = localStorage.getItem('auth0.is.authenticated') === 'true';
+    const isLoading = localStorage.getItem('auth0.is.loading') === 'true';
+
+    if (isLoading) {
+      return null;
+    }
+
+    if (isAuthenticated) {
       return redirect({
         to: '/dashboard',
       });
     }
-    return authResult;
+
+    return redirect({
+      to: '/login',
+    });
   },
 })
-
-function App() {
-  return (
-    <div>
-      APP
-    </div>
-  )
-}
