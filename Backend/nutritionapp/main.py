@@ -36,7 +36,7 @@ async def search_food(query: str):
 
 @app.get("/users/{user_id}/nutritions", response_model=list[NutritionSnapshot])
 async def get_nutrition(
-    user_id: uuid.UUID,
+    user_id: str,
     start_date: datetime | None = Query(default_factory=lambda: datetime.now(timezone.utc) - timedelta(days=30)),
     end_date: datetime | None = Query(default_factory=lambda: datetime.now(timezone.utc))
 ):
@@ -60,14 +60,14 @@ async def get_nutrition(
         if isinstance(doc.get("date"), str):
             doc["date"] = datetime.fromisoformat(doc["date"])
         # Use MongoDB's _id as the id field
-        doc["id"] = doc.pop("_id")
+        doc["id"] = uuid.UUID(doc.pop("_id"))
         snapshots.append(NutritionSnapshot(**doc))
     
     print(f"Returning {len(snapshots)} snapshots")
     return snapshots
 
 @app.post("/user/{user_id}/nutritions", response_model=NutritionSnapshot)
-async def create_nutrition(user_id: uuid.UUID, snapshot: NutritionSnapshotCreate):
+async def create_nutrition(user_id: str, snapshot: NutritionSnapshotCreate):
     """Creates a nutrition snapshot for a user."""
     food_data_calls = [search_nutrition_item(item) for item in snapshot.items]
     results = await asyncio.gather(*food_data_calls)
@@ -87,16 +87,16 @@ async def create_nutrition(user_id: uuid.UUID, snapshot: NutritionSnapshotCreate
     snapshot_dict["date"] = snapshot_dict["date"].isoformat()
     
     # Use the id as MongoDB's _id
-    snapshot_dict["_id"] = snapshot_dict.pop("id")
+    snapshot_dict["_id"] = str(snapshot_dict.pop("id"))
     
     await database.snapshots.insert_one(snapshot_dict)
 
     return new_snapshot
 
 @app.get("/users/{user_id}/nutritions/{nutrition_id}", response_model=NutritionSnapshot)
-async def get_nutrition_by_id(user_id: uuid.UUID, nutrition_id: uuid.UUID):
+async def get_nutrition_by_id(user_id: str, nutrition_id: uuid.UUID):
     """Fetches a specific nutrition snapshot by its ID."""
-    snapshot = await database.snapshots.find_one({"_id": nutrition_id})
+    snapshot = await database.snapshots.find_one({"_id": str(nutrition_id)})
 
     if not snapshot:
         raise HTTPException(status_code=404, detail="Snapshot not found")
@@ -104,9 +104,9 @@ async def get_nutrition_by_id(user_id: uuid.UUID, nutrition_id: uuid.UUID):
     return NutritionSnapshot.model_validate(snapshot)
 
 @app.delete("/user/{user_id}/nutritions/{nutrition_id}", response_model=NutritionSnapshot)
-async def delete_nutrition(user_id: uuid.UUID, nutrition_id: uuid.UUID):
+async def delete_nutrition(user_id: str, nutrition_id: uuid.UUID):
     """Deletes a nutrition snapshot for a user by its ID."""
-    snapshot = await database.snapshots.find_one_and_delete({"_id": nutrition_id})
+    snapshot = await database.snapshots.find_one_and_delete({"_id": str(nutrition_id)})
 
     if not snapshot:
         raise HTTPException(status_code=404, detail="Snapshot not found")
@@ -114,9 +114,9 @@ async def delete_nutrition(user_id: uuid.UUID, nutrition_id: uuid.UUID):
     return NutritionSnapshot.model_validate(snapshot)
 
 @app.get("/user/{user_id}/goals", response_model=Goals)
-async def get_goals(user_id: uuid.UUID):
+async def get_goals(user_id: str):
     """Fetches the goals for a specific user."""
-    goal = await database.goals.find_one({"user_id": str(user_id)})
+    goal = await database.goals.find_one({"user_id": user_id})
 
     if not goal:
         raise HTTPException(status_code=404, detail="Goals not found")
@@ -124,15 +124,16 @@ async def get_goals(user_id: uuid.UUID):
     return Goals.model_validate(goal)
 
 @app.put("/user/{user_id}/goals", response_model=Goals)
-async def update_goals(user_id: uuid.UUID, goals: GoalsCreate):
+async def update_goals(user_id: str, goals: GoalsCreate):
     """Updates the goals for a specific user."""
+    goal_id = uuid.uuid4()
     new_goal = Goals(
-        id=uuid.uuid4(),
+        id=goal_id,
         user_id=goals.user_id or user_id,
         updated_at=datetime.now(timezone.utc),
         total_calories=goals.total_calories,
     )
-    await database.goals.replace_one({"user_id": str(user_id)}, new_goal.model_dump(), upsert=True)
+    await database.goals.replace_one({"user_id": user_id}, new_goal.model_dump(), upsert=True)
     return new_goal
 
 def start():

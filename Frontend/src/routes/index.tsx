@@ -1,7 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { checkAuth } from '../utils/auth'
 
 export const Route = createFileRoute('/')({
-  component: App,
+  beforeLoad: () => {
+    const authResult = checkAuth();
+    if (authResult === true) {
+      return redirect({
+        to: '/dashboard',
+      });
+    }
+    return authResult;
+  },
 })
 
 function App() {

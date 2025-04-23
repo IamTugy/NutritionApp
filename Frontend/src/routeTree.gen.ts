@@ -11,9 +11,51 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as LoginImport } from './routes/login'
+import { Route as TrainersRouteImport } from './routes/trainers/route'
+import { Route as NutritionRouteImport } from './routes/nutrition/route'
+import { Route as GoalsRouteImport } from './routes/goals/route'
+import { Route as FoodSearchRouteImport } from './routes/food-search/route'
+import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const LoginRoute = LoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TrainersRouteRoute = TrainersRouteImport.update({
+  id: '/trainers',
+  path: '/trainers',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const NutritionRouteRoute = NutritionRouteImport.update({
+  id: '/nutrition',
+  path: '/nutrition',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const GoalsRouteRoute = GoalsRouteImport.update({
+  id: '/goals',
+  path: '/goals',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FoodSearchRouteRoute = FoodSearchRouteImport.update({
+  id: '/food-search',
+  path: '/food-search',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardRouteRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +74,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/food-search': {
+      id: '/food-search'
+      path: '/food-search'
+      fullPath: '/food-search'
+      preLoaderRoute: typeof FoodSearchRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/goals': {
+      id: '/goals'
+      path: '/goals'
+      fullPath: '/goals'
+      preLoaderRoute: typeof GoalsRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/nutrition': {
+      id: '/nutrition'
+      path: '/nutrition'
+      fullPath: '/nutrition'
+      preLoaderRoute: typeof NutritionRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/trainers': {
+      id: '/trainers'
+      path: '/trainers'
+      fullPath: '/trainers'
+      preLoaderRoute: typeof TrainersRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +123,84 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRoute
+  '/food-search': typeof FoodSearchRouteRoute
+  '/goals': typeof GoalsRouteRoute
+  '/nutrition': typeof NutritionRouteRoute
+  '/trainers': typeof TrainersRouteRoute
+  '/login': typeof LoginRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRoute
+  '/food-search': typeof FoodSearchRouteRoute
+  '/goals': typeof GoalsRouteRoute
+  '/nutrition': typeof NutritionRouteRoute
+  '/trainers': typeof TrainersRouteRoute
+  '/login': typeof LoginRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRoute
+  '/food-search': typeof FoodSearchRouteRoute
+  '/goals': typeof GoalsRouteRoute
+  '/nutrition': typeof NutritionRouteRoute
+  '/trainers': typeof TrainersRouteRoute
+  '/login': typeof LoginRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/food-search'
+    | '/goals'
+    | '/nutrition'
+    | '/trainers'
+    | '/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/food-search'
+    | '/goals'
+    | '/nutrition'
+    | '/trainers'
+    | '/login'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/food-search'
+    | '/goals'
+    | '/nutrition'
+    | '/trainers'
+    | '/login'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRouteRoute: typeof DashboardRouteRoute
+  FoodSearchRouteRoute: typeof FoodSearchRouteRoute
+  GoalsRouteRoute: typeof GoalsRouteRoute
+  NutritionRouteRoute: typeof NutritionRouteRoute
+  TrainersRouteRoute: typeof TrainersRouteRoute
+  LoginRoute: typeof LoginRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRouteRoute: DashboardRouteRoute,
+  FoodSearchRouteRoute: FoodSearchRouteRoute,
+  GoalsRouteRoute: GoalsRouteRoute,
+  NutritionRouteRoute: NutritionRouteRoute,
+  TrainersRouteRoute: TrainersRouteRoute,
+  LoginRoute: LoginRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +213,35 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/dashboard",
+        "/food-search",
+        "/goals",
+        "/nutrition",
+        "/trainers",
+        "/login"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/dashboard": {
+      "filePath": "dashboard/route.tsx"
+    },
+    "/food-search": {
+      "filePath": "food-search/route.tsx"
+    },
+    "/goals": {
+      "filePath": "goals/route.tsx"
+    },
+    "/nutrition": {
+      "filePath": "nutrition/route.tsx"
+    },
+    "/trainers": {
+      "filePath": "trainers/route.tsx"
+    },
+    "/login": {
+      "filePath": "login.tsx"
     }
   }
 }
