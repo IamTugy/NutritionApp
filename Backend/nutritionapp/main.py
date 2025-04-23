@@ -104,14 +104,29 @@ async def get_nutrition_by_id(user_id: str, nutrition_id: uuid.UUID):
     return NutritionSnapshot.model_validate(snapshot)
 
 @app.delete("/user/{user_id}/nutritions/{nutrition_id}", response_model=NutritionSnapshot)
-async def delete_nutrition(user_id: str, nutrition_id: uuid.UUID):
+async def delete_nutrition(user_id: str, nutrition_id: str):
     """Deletes a nutrition snapshot for a user by its ID."""
-    snapshot = await database.snapshots.find_one_and_delete({"_id": str(nutrition_id)})
+    # First find the snapshot to ensure it exists and belongs to the user
+    snapshot = await database.snapshots.find_one({
+        "_id": nutrition_id,
+        "user_id": user_id
+    })
 
     if not snapshot:
         raise HTTPException(status_code=404, detail="Snapshot not found")
     
-    return NutritionSnapshot.model_validate(snapshot)
+    # Delete the snapshot
+    await database.snapshots.delete_one({
+        "_id": nutrition_id,
+        "user_id": user_id
+    })
+    
+    # Convert the snapshot to the response model
+    if isinstance(snapshot.get("date"), str):
+        snapshot["date"] = datetime.fromisoformat(snapshot["date"])
+    snapshot["id"] = snapshot.pop("_id")
+    
+    return NutritionSnapshot(**snapshot)
 
 @app.get("/user/{user_id}/goals", response_model=list[Goals])
 async def get_goals(user_id: str):

@@ -1,5 +1,4 @@
 import { Line } from 'react-chartjs-2';
-import { startOfDay, endOfDay, subDays } from 'date-fns'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,12 +9,11 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { useGetGoalsUserUserIdGoalsGet, useGetNutritionUsersUserIdNutritionsGet } from '../api/generated/fastAPI';
+import { useGetGoalsUserUserIdGoalsGet } from '../api/generated/fastAPI';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LoadingSpinner } from '../components/loading/LoadingSpinner';
 import { useNutritionAggregation } from '@/hooks/useNutritionAggregation';
 import { useMemo } from 'react';
-import { useNutrition } from '@/hooks/useNutrition';
 
 ChartJS.register(
   CategoryScale,
@@ -52,8 +50,17 @@ export function Dashboard() {
         borderColor: 'rgb(255, 99, 132)',
         tension: 0.1,
       },
+      {
+        label: 'Calories Goal',
+        data: data.map(() => myGoals?.total_calories || 0),
+        borderColor: 'rgb(75, 192, 192)',
+        borderDash: [5, 5],
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0,
+      },
     ],
-  }), [data]);
+  }), [data, myGoals?.total_calories]);
 
   if (isLoading || isLoadingGoals || isLoadingTodaysNutrition) {
     return <LoadingSpinner />;
@@ -96,6 +103,11 @@ export function Dashboard() {
                 title: {
                   display: true,
                   text: 'Weekly Nutrition Progress',
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
                 },
               },
             }}

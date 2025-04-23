@@ -1,4 +1,4 @@
-import type { Goals, NutritionSnapshot } from '@/api/generated/model';
+import type { Goals } from '@/api/generated/model';
 import { useGetGoalsUserUserIdGoalsGet, useUpdateGoalsUserUserIdGoalsPut } from '../api/generated/fastAPI';
 import { useAuth0 } from '@auth0/auth0-react';
 import { GoalCard } from '../components/goals/GoalCard';
@@ -7,8 +7,14 @@ import { useNutritionAggregation } from '@/hooks/useNutritionAggregation';
 
 export function Goals() {
   const { user } = useAuth0();
-  const { data: goalsData, isLoading: isLoadingGoals } = useGetGoalsUserUserIdGoalsGet(user?.sub || '');
-  const { mutate: updateGoals } = useUpdateGoalsUserUserIdGoalsPut();
+  const { data: goalsData, isLoading: isLoadingGoals, refetch } = useGetGoalsUserUserIdGoalsGet(user?.sub || '');
+  const { mutate: updateGoals } = useUpdateGoalsUserUserIdGoalsPut({
+    mutation: {
+      onSuccess: () => {
+        refetch();
+      },
+    }
+  });
 
   const { data, isLoading } = useNutritionAggregation(user?.sub || null, 1);
 

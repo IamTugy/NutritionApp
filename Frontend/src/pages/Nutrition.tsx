@@ -6,9 +6,21 @@ import { LoadingSpinner } from '@/components/loading/LoadingSpinner';
 
 export function Nutrition() {
   const { user } = useAuth0();
-  const { data, isLoading } = useNutrition(user?.sub || null);
-  const { mutate: createNutrition } = useCreateNutritionUserUserIdNutritionsPost();
-  const { mutate: deleteNutrition } = useDeleteNutritionUserUserIdNutritionsNutritionIdDelete();
+  const { data, isLoading, refetch } = useNutrition(user?.sub || null);
+  const { mutate: createNutrition } = useCreateNutritionUserUserIdNutritionsPost({
+    mutation: {
+      onSuccess: () => {
+        refetch();
+      },
+    }
+  });
+  const { mutate: deleteNutrition } = useDeleteNutritionUserUserIdNutritionsNutritionIdDelete({
+    mutation: {
+      onSuccess: () => {
+        refetch();
+      },
+    }
+  });
   const [isAdding, setIsAdding] = useState(false);
   const [newFood, setNewFood] = useState('');
 
