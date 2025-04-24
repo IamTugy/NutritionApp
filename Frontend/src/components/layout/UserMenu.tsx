@@ -38,7 +38,7 @@ export function UserMenu() {
           style={floatingStyles}
           aria-labelledby={headingId}
           {...getFloatingProps()}
-          className="mt-2 w-48 rounded-md border border-gray-300 bg-white shadow-lg"
+          className="z-10 mt-2 w-48 rounded-md border border-gray-300 bg-white shadow-lg"
         >
           <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-300">
             <p className="font-medium">{user?.name}</p>
