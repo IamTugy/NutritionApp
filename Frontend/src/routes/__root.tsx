@@ -6,6 +6,7 @@ import { SidebarProvider } from '@/contexts/SidebarContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/utils/tw'
+import { MealPlateProvider } from '@/contexts/MealPlateContext'
 
 function LoadingScreen() {
   const { isDarkMode } = useTheme();
@@ -86,11 +87,13 @@ export const Route = createRootRoute({
 
     return (
       <ThemeProvider>
+        <MealPlateProvider>
         <SidebarProvider>
           <MainLayout>
             <Outlet />
           </MainLayout>
         </SidebarProvider>
+        </MealPlateProvider>
       </ThemeProvider>
     )
   },

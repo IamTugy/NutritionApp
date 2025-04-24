@@ -1,22 +1,16 @@
-import { useState } from 'react';
 import { useCreateNutritionUserUserIdNutritionsPost, useDeleteNutritionUserUserIdNutritionsNutritionIdDelete } from '../api/generated/fastAPI';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNutrition } from '@/hooks/useNutrition';
 import { LoadingSpinner } from '@/components/loading/LoadingSpinner';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
+import { useNavigate } from '@tanstack/react-router';
 
 export function Nutrition() {
   const { user } = useAuth0();
   const { isDarkMode } = useTheme();
+  const navigate = useNavigate();
   const { data, isLoading, refetch } = useNutrition(user?.sub || null);
-  const { mutate: createNutrition } = useCreateNutritionUserUserIdNutritionsPost({
-    mutation: {
-      onSuccess: () => {
-        refetch();
-      },
-    }
-  });
   const { mutate: deleteNutrition } = useDeleteNutritionUserUserIdNutritionsNutritionIdDelete({
     mutation: {
       onSuccess: () => {
@@ -24,23 +18,6 @@ export function Nutrition() {
       },
     }
   });
-  const [isAdding, setIsAdding] = useState(false);
-  const [newFood, setNewFood] = useState('');
-
-  const handleAddFood = () => {
-    if (!newFood) return;
-
-    createNutrition({
-      userId: user?.sub || '',
-      data: {
-        user_id: user?.sub || '',
-        items: [newFood],
-      },
-    });
-
-    setNewFood('');
-    setIsAdding(false);
-  };
 
   const handleDelete = (nutritionId: string) => {
     deleteNutrition({
@@ -61,58 +38,15 @@ export function Nutrition() {
           isDarkMode ? "text-white" : "text-gray-900"
         )}>Nutrition Tracking</h1>
         <button
-          onClick={() => setIsAdding(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer"
+          onClick={() => navigate({ to: '/food-search' })}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer flex items-center space-x-2"
         >
-          Add Food
+          <span>Add Food</span>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
         </button>
       </div>
-
-      {isAdding && (
-        <div className={cn(
-          "p-6 rounded-lg shadow",
-          isDarkMode ? "bg-gray-800" : "bg-white"
-        )}>
-          <h2 className={cn(
-            "text-lg font-semibold mb-4",
-            isDarkMode ? "text-white" : "text-gray-900"
-          )}>Add New Food</h2>
-          <div className="space-y-4">
-            <div>
-              <label className={cn(
-                "block text-sm font-medium",
-                isDarkMode ? "text-gray-300" : "text-gray-700"
-              )}>Food Name</label>
-              <input
-                type="text"
-                value={newFood}
-                onChange={(e) => setNewFood(e.target.value)}
-                className={cn(
-                  "mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500",
-                  isDarkMode 
-                    ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" 
-                    : "border-gray-300"
-                )}
-                placeholder="Enter food name (e.g., 'Chicken Breast')"
-              />
-            </div>
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setIsAdding(false)}
-                className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddFood}
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {data?.map((nutrition) => (

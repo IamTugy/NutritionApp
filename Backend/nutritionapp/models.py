@@ -5,15 +5,20 @@ from pydantic import BaseModel, Field
 
 class NutritionItem(BaseModel):
     """An item consumed by the user"""
+
     food_name: str = Field(
         description="The name of the item", examples=["Apple", "Banana"]
     )
     calories: float = Field(description="The number of calories in the item")
     protein: float = Field(default=0.0, description="The number of protein in the item")
     fat: float = Field(default=0.0, description="The number of fat in the item")
-    carbohydrates: float = Field(default=0.0, description="The number of carbohydrates in the item")
+    carbohydrates: float = Field(
+        default=0.0, description="The number of carbohydrates in the item"
+    )
     fiber: float = Field(default=0.0, description="The number of fiber in the item")
-    water: float = Field(default=0.0, description="The number of water in the item in grams")
+    water: float = Field(
+        default=0.0, description="The number of water in the item in grams"
+    )
 
 
 class NutritionSnapshot(BaseModel):
@@ -41,9 +46,7 @@ class NutritionSnapshotCreate(BaseModel):
     user_id: str | None = Field(
         description="The user's unique identifier - allows creating snapshots for other users, after checking permissions"
     )
-    items: list[str] = Field(
-        description="The list of items consumed in the snapshot"
-    )
+    items: list[str] = Field(description="The list of items consumed in the snapshot")
 
 
 class Goals(BaseModel):

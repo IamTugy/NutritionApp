@@ -1,6 +1,3 @@
-import { useGetNutritionUsersUserIdNutritionsGet } from '../api/generated/fastAPI';
-import { useAuth0 } from '@auth0/auth0-react';
-import { startOfDay, endOfDay, subDays } from 'date-fns';
 import type { NutritionSnapshot } from '../api/generated/model';
 import { useNutrition } from './useNutrition';
 

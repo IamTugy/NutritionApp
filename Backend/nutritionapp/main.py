@@ -51,10 +51,9 @@ async def get_nutrition(
         if end_date:
             find_attributes["date"]["$lte"] = end_date.isoformat()
     
-    print(f"Query attributes: {find_attributes}")
-    
     snapshots = []
-    async for doc in database.snapshots.find(find_attributes):
+    # Sort by date in descending order (newest first)
+    async for doc in database.snapshots.find(find_attributes).sort("date", -1):
         print(f"Found snapshot: {doc}")
         # Convert string date back to datetime
         if isinstance(doc.get("date"), str):

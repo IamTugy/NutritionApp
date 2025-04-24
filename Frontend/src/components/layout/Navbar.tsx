@@ -4,6 +4,7 @@ import { useSidebar } from '@/contexts/SidebarContext';
 import { UserMenu } from './UserMenu';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
+import { MealPlateButton } from '@/components/meal/MealPlateButton';
 
 export function Navbar() {
   const { isAuthenticated, loginWithRedirect } = useAuth0();
@@ -37,10 +38,11 @@ export function Navbar() {
               <span className={cn(
                 "text-xl font-bold",
                 isDarkMode ? "text-white" : "text-gray-800"
-              )}>Nutrition Tracker</span>
+              )}>Food Track</span>
             </Link>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center space-x-4">
+            {isAuthenticated && <MealPlateButton />}
             {isAuthenticated ? (
               <UserMenu />
             ) : (
