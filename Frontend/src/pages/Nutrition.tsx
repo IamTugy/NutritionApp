@@ -3,9 +3,12 @@ import { useCreateNutritionUserUserIdNutritionsPost, useDeleteNutritionUserUserI
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNutrition } from '@/hooks/useNutrition';
 import { LoadingSpinner } from '@/components/loading/LoadingSpinner';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/utils/tw';
 
 export function Nutrition() {
   const { user } = useAuth0();
+  const { isDarkMode } = useTheme();
   const { data, isLoading, refetch } = useNutrition(user?.sub || null);
   const { mutate: createNutrition } = useCreateNutritionUserUserIdNutritionsPost({
     mutation: {
@@ -53,7 +56,10 @@ export function Nutrition() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Nutrition Tracking</h1>
+        <h1 className={cn(
+          "text-2xl font-bold",
+          isDarkMode ? "text-white" : "text-gray-900"
+        )}>Nutrition Tracking</h1>
         <button
           onClick={() => setIsAdding(true)}
           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 cursor-pointer"
@@ -63,16 +69,30 @@ export function Nutrition() {
       </div>
 
       {isAdding && (
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-lg font-semibold mb-4">Add New Food</h2>
+        <div className={cn(
+          "p-6 rounded-lg shadow",
+          isDarkMode ? "bg-gray-800" : "bg-white"
+        )}>
+          <h2 className={cn(
+            "text-lg font-semibold mb-4",
+            isDarkMode ? "text-white" : "text-gray-900"
+          )}>Add New Food</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Food Name</label>
+              <label className={cn(
+                "block text-sm font-medium",
+                isDarkMode ? "text-gray-300" : "text-gray-700"
+              )}>Food Name</label>
               <input
                 type="text"
                 value={newFood}
                 onChange={(e) => setNewFood(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                className={cn(
+                  "mt-1 block w-full rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500",
+                  isDarkMode 
+                    ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400" 
+                    : "border-gray-300"
+                )}
                 placeholder="Enter food name (e.g., 'Chicken Breast')"
               />
             </div>
@@ -96,19 +116,31 @@ export function Nutrition() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {data?.map((nutrition) => (
-          <div key={nutrition.id} className="bg-white rounded-lg shadow p-4 group relative">
+          <div key={nutrition.id} className={cn(
+            "rounded-lg shadow p-4 group relative",
+            isDarkMode ? "bg-gray-800" : "bg-white"
+          )}>
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="text-lg font-semibold">
+                <h3 className={cn(
+                  "text-lg font-semibold",
+                  isDarkMode ? "text-white" : "text-gray-900"
+                )}>
                   Meal at {new Date(nutrition.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {new Date(nutrition.date).toLocaleDateString()}
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className={cn(
+                  "text-sm",
+                  isDarkMode ? "text-gray-400" : "text-gray-500"
+                )}>
                   Total Calories: {nutrition.total_calories}
                 </p>
               </div>
               <button
                 onClick={() => handleDelete(nutrition.id)}
-                className="text-gray-500 hover:text-gray-900 cursor-pointer md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                className={cn(
+                  "cursor-pointer md:opacity-0 md:group-hover:opacity-100 transition-opacity",
+                  isDarkMode ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-900"
+                )}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -117,7 +149,10 @@ export function Nutrition() {
             </div>
             <div className="mt-2 space-y-2">
               {nutrition.items.map((item, index) => (
-                <div key={index} className="flex justify-between text-sm">
+                <div key={index} className={cn(
+                  "flex justify-between text-sm",
+                  isDarkMode ? "text-gray-300" : "text-gray-900"
+                )}>
                   <span>{item.food_name}</span>
                   <span>{item.calories} cal</span>
                 </div>

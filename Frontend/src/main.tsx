@@ -6,6 +6,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { routeTree } from './routeTree.gen'
 import { auth0Config } from './config/auth0'
+import { ThemeProvider } from './contexts/ThemeContext'
 import './styles.css'
 
 const queryClient = new QueryClient({
@@ -36,11 +37,13 @@ declare module '@tanstack/react-router' {
 
 ReactDOM.createRoot(document.getElementById('app')!).render(
   <React.StrictMode>
-    <Auth0Provider {...auth0Config}>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </Auth0Provider>
+    <ThemeProvider>
+      <Auth0Provider {...auth0Config}>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </Auth0Provider>
+    </ThemeProvider>
   </React.StrictMode>
 )

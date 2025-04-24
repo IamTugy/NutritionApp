@@ -14,6 +14,8 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { LoadingSpinner } from '../components/loading/LoadingSpinner';
 import { useNutritionAggregation } from '@/hooks/useNutritionAggregation';
 import { useMemo } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/utils/tw';
 
 ChartJS.register(
   CategoryScale,
@@ -27,6 +29,7 @@ ChartJS.register(
 
 export function Dashboard() {
   const { user } = useAuth0();
+  const { isDarkMode } = useTheme();
   const { data, isLoading } = useNutritionAggregation(user?.sub || null, 7);
   const { data: goalsData, isLoading: isLoadingGoals } = useGetGoalsUserUserIdGoalsGet(user?.sub || '');
   const { data: todaysNutritionData, isLoading: isLoadingTodaysNutrition } = useNutritionAggregation(user?.sub || null, 1);
@@ -68,28 +71,64 @@ export function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+      <h1 className={cn(
+        "text-2xl font-bold",
+        isDarkMode ? "text-white" : "text-gray-900"
+      )}>Dashboard</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-2">Today's Calories</h3>
+        <div className={cn(
+          "p-6 rounded-lg shadow",
+          isDarkMode ? "bg-gray-800" : "bg-white"
+        )}>
+          <h3 className={cn(
+            "text-lg font-semibold mb-2",
+            isDarkMode ? "text-white" : "text-gray-900"
+          )}>Today's Calories</h3>
           <p className="text-3xl font-bold text-blue-600">{todaysNutritionData[0].total_calories}</p>
-          <p className="text-sm text-gray-500">Goal: {myGoals?.total_calories || 'N/A'}</p>
+          <p className={cn(
+            "text-sm",
+            isDarkMode ? "text-gray-400" : "text-gray-500"
+          )}>Goal: {myGoals?.total_calories || 'N/A'}</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-2">Protein Intake</h3>
+        <div className={cn(
+          "p-6 rounded-lg shadow",
+          isDarkMode ? "bg-gray-800" : "bg-white"
+        )}>
+          <h3 className={cn(
+            "text-lg font-semibold mb-2",
+            isDarkMode ? "text-white" : "text-gray-900"
+          )}>Protein Intake</h3>
           <p className="text-3xl font-bold text-green-600">{todaysNutritionData[0].total_protein}g</p>
-          <p className="text-sm text-gray-500">Goal: {myGoals?.total_protein ? `${myGoals.total_protein}g` : 'N/A'}</p>
+          <p className={cn(
+            "text-sm",
+            isDarkMode ? "text-gray-400" : "text-gray-500"
+          )}>Goal: {myGoals?.total_protein ? `${myGoals.total_protein}g` : 'N/A'}</p>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-lg font-semibold mb-2">Water Intake</h3>
+        <div className={cn(
+          "p-6 rounded-lg shadow",
+          isDarkMode ? "bg-gray-800" : "bg-white"
+        )}>
+          <h3 className={cn(
+            "text-lg font-semibold mb-2",
+            isDarkMode ? "text-white" : "text-gray-900"
+          )}>Water Intake</h3>
           <p className="text-3xl font-bold text-blue-400">{todaysNutritionData[0].total_water}L</p>
-          <p className="text-sm text-gray-500">Goal: {myGoals?.total_water_intake ? `${myGoals.total_water_intake}L` : 'N/A'}</p>
+          <p className={cn(
+            "text-sm",
+            isDarkMode ? "text-gray-400" : "text-gray-500"
+          )}>Goal: {myGoals?.total_water_intake ? `${myGoals.total_water_intake}L` : 'N/A'}</p>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h2 className="text-lg font-semibold mb-4">Nutrition Overview</h2>
+      <div className={cn(
+        "p-6 rounded-lg shadow",
+        isDarkMode ? "bg-gray-800" : "bg-white"
+      )}>
+        <h2 className={cn(
+          "text-lg font-semibold mb-4",
+          isDarkMode ? "text-white" : "text-gray-900"
+        )}>Nutrition Overview</h2>
         <div className="h-96">
           <Line
             data={chartData}
@@ -99,16 +138,34 @@ export function Dashboard() {
               plugins: {
                 legend: {
                   position: 'top' as const,
+                  labels: {
+                    color: isDarkMode ? 'white' : 'black'
+                  }
                 },
                 title: {
                   display: true,
                   text: 'Weekly Nutrition Progress',
+                  color: isDarkMode ? 'white' : 'black'
                 },
               },
               scales: {
                 y: {
                   beginAtZero: true,
+                  grid: {
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                  },
+                  ticks: {
+                    color: isDarkMode ? 'white' : 'black'
+                  }
                 },
+                x: {
+                  grid: {
+                    color: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                  },
+                  ticks: {
+                    color: isDarkMode ? 'white' : 'black'
+                  }
+                }
               },
             }}
           />
