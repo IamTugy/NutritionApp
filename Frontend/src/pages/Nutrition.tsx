@@ -94,34 +94,34 @@ export function Nutrition() {
         </div>
       )}
 
-      <div className="flex flex-col   overflow-hidden gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {data?.map((nutrition) => (
-          <div key={nutrition.id} className="bg-white rounded">
-            <div className="p-4">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    {new Date(nutrition.date).toLocaleDateString()}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Total Calories: {nutrition.total_calories}
-                  </p>
+          <div key={nutrition.id} className="bg-white rounded-lg shadow p-4 group relative">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="text-lg font-semibold">
+                  Meal at {new Date(nutrition.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • {new Date(nutrition.date).toLocaleDateString()}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Total Calories: {nutrition.total_calories}
+                </p>
+              </div>
+              <button
+                onClick={() => handleDelete(nutrition.id)}
+                className="text-gray-500 hover:text-gray-900 cursor-pointer md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+            <div className="mt-2 space-y-2">
+              {nutrition.items.map((item, index) => (
+                <div key={index} className="flex justify-between text-sm">
+                  <span>{item.food_name}</span>
+                  <span>{item.calories} cal</span>
                 </div>
-                <button
-                  onClick={() => handleDelete(nutrition.id)}
-                  className="text-red-500 hover:text-red-700 cursor-pointer"
-                >
-                  Delete
-                </button>
-              </div>
-              <div className="mt-2 space-y-2">
-                {nutrition.items.map((item, index) => (
-                  <div key={index} className="flex justify-between text-sm">
-                    <span>{item.food_name}</span>
-                    <span>{item.calories} cal</span>
-                  </div>
-                ))}
-              </div>
+              ))}
             </div>
           </div>
         ))}

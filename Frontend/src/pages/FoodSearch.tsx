@@ -44,7 +44,7 @@ export function FoodSearch() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {data?.map((food) => (
             <div key={food.food_name} className="bg-white p-6 rounded-lg shadow">
-              <h2 className="text-lg font-semibold mb-2">{food.food_name}</h2>
+              <h2 className="text-2xl font-semibold mb-2">{food.food_name}</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-600">Calories</p>
