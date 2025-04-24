@@ -3,6 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { cn } from '@/utils/tw';
 import { useEffect, useRef } from 'react';
+import { Nutrition } from '@/pages/Nutrition';
 
 export function Sidebar() {
   const { isAuthenticated } = useAuth0();
@@ -49,24 +50,28 @@ export function Sidebar() {
           <Link
             to="/dashboard"
             className={className}
+            onClick={() => toggle()}
           >
             Dashboard
           </Link>
           <Link
             to="/nutrition"
             className={className}
+            onClick={() => toggle()}
           >
             Nutrition Tracking
           </Link>
           <Link
             to="/goals"
             className={className}
+            onClick={() => toggle()}
           >
             Goals
           </Link>
           <Link
             to="/food-search"
             className={className}
+            onClick={() => toggle()}
           >
             Food Search
           </Link>

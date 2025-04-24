@@ -22,7 +22,7 @@ export function Navbar() {
                 </svg>
               </button>
             )}
-            <Link to="/" className="flex items-center">
+            <Link to="/dashboard" className="flex items-center">
               <span className="text-xl font-bold text-gray-800">Nutrition Tracker</span>
             </Link>
           </div>
