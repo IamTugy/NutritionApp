@@ -6,21 +6,37 @@ import { useAuth0Users } from '@/hooks/useAuth0Users';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { Auth0User } from '@/types/auth0';
+import { useGetTrainerUsersTrainerTrainerIdUsersGet } from '@/api/generated/fastAPI';
 
-interface TrainerSelectProps {
-  onSelect: (trainer: Auth0User) => void;
-  isAlreadyTrainer: (userId: string) => boolean;
+interface UserSelectProps {
+  onSelect: (user: Auth0User) => void;
+  selectedUserId: string;
 }
 
-export function TrainerSelect({ onSelect, isAlreadyTrainer }: TrainerSelectProps) {
+export function UserSelect({ onSelect, selectedUserId }: UserSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { isDarkMode } = useTheme();
   const { user } = useAuth0();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { data: potentialTrainers = [], isLoading: isSearching, error } = useAuth0Users(searchQuery);
+  const { data: potentialUsers = [], isLoading: isSearching, error } = useAuth0Users(searchQuery);
+  const { data: trainees = [] } = useGetTrainerUsersTrainerTrainerIdUsersGet(user?.sub || '', {
+    status: 'active',
+  });
 
-  const filteredTrainers = potentialTrainers.filter(trainer => trainer.user_id !== user?.sub);
+  const activeTraineeIds = trainees.map(trainee => trainee.user_id);
+
+  const filteredUsers = potentialUsers
+    .filter(potentialUser => 
+      potentialUser.user_id === user?.sub || activeTraineeIds.includes(potentialUser.user_id)
+    )
+    .sort((a, b) => {
+      // Put current user first
+      if (a.user_id === user?.sub) return -1;
+      if (b.user_id === user?.sub) return 1;
+      // Then sort by name
+      return a.name.localeCompare(b.name);
+    });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -33,6 +49,9 @@ export function TrainerSelect({ onSelect, isAlreadyTrainer }: TrainerSelectProps
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const selectedUser = potentialUsers.find(u => u.user_id === selectedUserId) || user;
+  const isCurrentUser = selectedUser?.user_id === user?.sub;
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
@@ -44,7 +63,14 @@ export function TrainerSelect({ onSelect, isAlreadyTrainer }: TrainerSelectProps
             : "bg-white border-gray-300 text-gray-900"
         )}
       >
-        <span>Add a trainer</span>
+        <div className="flex items-center space-x-3">
+          <UserAvatar
+            name={selectedUser?.name || 'Select User'}
+            picture={selectedUser?.picture}
+            size="sm"
+          />
+          <span>{selectedUser?.name}{isCurrentUser ? ' (You)' : ''}</span>
+        </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className={cn(
@@ -74,7 +100,7 @@ export function TrainerSelect({ onSelect, isAlreadyTrainer }: TrainerSelectProps
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for a trainer..."
+              placeholder="Search for a user..."
               className={cn(
                 "w-full p-2 rounded-md border",
                 isDarkMode 
@@ -96,37 +122,56 @@ export function TrainerSelect({ onSelect, isAlreadyTrainer }: TrainerSelectProps
               )}>
                 Error loading users
               </div>
-            ) : filteredTrainers.length > 0 ? (
-              filteredTrainers.map((trainer) => {
-                const isTrainer = isAlreadyTrainer(trainer.user_id);
+            ) : filteredUsers.length > 0 ? (
+              filteredUsers.map((potentialUser) => {
+                const isCurrentUser = potentialUser.user_id === user?.sub;
+                const isSelected = potentialUser.user_id === selectedUserId;
                 return (
                   <button
-                    key={trainer.user_id}
+                    key={potentialUser.user_id}
                     onClick={() => {
-                      onSelect(trainer);
+                      onSelect(potentialUser);
                       setIsOpen(false);
                       setSearchQuery('');
                     }}
-                    disabled={isTrainer}
                     className={cn(
                       "w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer",
                       isDarkMode && "hover:bg-gray-700",
-                      isTrainer && "opacity-50 cursor-not-allowed",
-                      isDarkMode ? "text-gray-300" : "text-gray-900"
+                      isDarkMode ? "text-gray-300" : "text-gray-900",
+                      isSelected && (isDarkMode ? "bg-gray-700" : "bg-gray-100")
                     )}
                   >
                     <div className="flex items-center space-x-3">
                       <UserAvatar
-                        name={trainer.name}
-                        picture={trainer.picture}
+                        name={potentialUser.name}
+                        picture={potentialUser.picture}
                         size="md"
                       />
-                      <div>
-                        <p className="font-medium">{trainer.name}</p>
-                        <p className={cn(
-                          "text-sm",
-                          isDarkMode ? "text-gray-400" : "text-gray-500"
-                        )}>{trainer.email}</p>
+                      <div className="flex-1 flex items-center justify-between">
+                        <div className="flex flex-col">
+                          <p className="font-medium">
+                            {potentialUser.name}
+                            {isCurrentUser ? ' (You)' : ''}
+                          </p>
+                          <p className={cn(
+                            "text-sm",
+                            isDarkMode ? "text-gray-400" : "text-gray-500"
+                          )}>{potentialUser.email}</p>
+                        </div>
+                        {isSelected && (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 text-green-500"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
                       </div>
                     </div>
                   </button>

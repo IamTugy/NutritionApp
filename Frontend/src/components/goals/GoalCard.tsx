@@ -1,6 +1,6 @@
 import { cn } from '../../utils/tw';
 import type { Goals } from '@/api/generated/model';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 
 interface GoalCardProps {
@@ -12,12 +12,28 @@ interface GoalCardProps {
   unit: string;
   color: string;
   presetValues: number[];
+  isEditing: boolean;
+  onEditChange: (isEditing: boolean) => void;
 }
 
-export function GoalCard({ goal, currentValue, onUpdateGoal, type, title, unit, color, presetValues }: GoalCardProps) {
-  const [isEditing, setIsEditing] = useState(!goal);
+export function GoalCard({ 
+  goal, 
+  currentValue, 
+  onUpdateGoal, 
+  type, 
+  title, 
+  unit, 
+  color, 
+  presetValues,
+  isEditing,
+  onEditChange
+}: GoalCardProps) {
   const [goalValue, setGoalValue] = useState(goal?.[type]?.toString() || '');
   const { isDarkMode } = useTheme();
+
+  useEffect(() => {
+    setGoalValue(goal?.[type]?.toString() || '');
+  }, [goal, type]);
 
   const progress = goal?.[type] ? Math.min((currentValue / (goal[type] || 1)) * 100, 100) : 0;
 
@@ -28,7 +44,7 @@ export function GoalCard({ goal, currentValue, onUpdateGoal, type, title, unit, 
         isDarkMode ? "bg-gray-800" : "bg-white"
       )}>
         {Boolean(goal) && <button
-          onClick={() => setIsEditing(false)}
+          onClick={() => onEditChange(false)}
           className={cn(
             "absolute top-2 right-2 focus:outline-none cursor-pointer",
             isDarkMode ? "text-gray-400 hover:text-gray-300" : "text-gray-400 hover:text-gray-600"
@@ -70,7 +86,7 @@ export function GoalCard({ goal, currentValue, onUpdateGoal, type, title, unit, 
           <button
             onClick={() => {
               onUpdateGoal(type, Number(goalValue));
-              setIsEditing(false);
+              onEditChange(false);
             }}
             disabled={!goalValue}
             className={cn(
@@ -126,7 +142,7 @@ export function GoalCard({ goal, currentValue, onUpdateGoal, type, title, unit, 
             isDarkMode ? "text-gray-300" : "text-gray-600"
           )}>
             <span>Target</span>
-            <span>{goal[type]} {unit}</span>
+            <span>{goal[type] ? `${goal[type]} ${unit}` : 'N/A'}</span>
           </div>
           <div className={cn(
             "w-full rounded-full h-2.5",
@@ -142,7 +158,7 @@ export function GoalCard({ goal, currentValue, onUpdateGoal, type, title, unit, 
           </div>
         </div>
         <button
-          onClick={() => setIsEditing(true)}
+          onClick={() => onEditChange(true)}
           className={cn(
             'w-full px-4 py-2 rounded-md cursor-pointer transition-colors duration-200',
             isDarkMode 

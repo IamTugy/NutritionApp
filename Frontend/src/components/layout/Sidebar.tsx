@@ -77,11 +77,11 @@ export function Sidebar() {
             Goals
           </Link>
           <Link
-            to="/food-search"
+            to="/meal-builder"
             className={className}
             onClick={() => toggle()}
           >
-            Food Search
+            Meal Builder
           </Link>
           <Link
             to="/trainers"

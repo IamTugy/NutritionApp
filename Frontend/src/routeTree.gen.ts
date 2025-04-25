@@ -14,8 +14,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
 import { Route as TrainersRouteImport } from './routes/trainers/route'
 import { Route as NutritionRouteImport } from './routes/nutrition/route'
+import { Route as MealBuilderRouteImport } from './routes/meal-builder/route'
 import { Route as GoalsRouteImport } from './routes/goals/route'
-import { Route as FoodSearchRouteImport } from './routes/food-search/route'
 import { Route as DashboardRouteImport } from './routes/dashboard/route'
 import { Route as IndexImport } from './routes/index'
 
@@ -39,15 +39,15 @@ const NutritionRouteRoute = NutritionRouteImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const GoalsRouteRoute = GoalsRouteImport.update({
-  id: '/goals',
-  path: '/goals',
+const MealBuilderRouteRoute = MealBuilderRouteImport.update({
+  id: '/meal-builder',
+  path: '/meal-builder',
   getParentRoute: () => rootRoute,
 } as any)
 
-const FoodSearchRouteRoute = FoodSearchRouteImport.update({
-  id: '/food-search',
-  path: '/food-search',
+const GoalsRouteRoute = GoalsRouteImport.update({
+  id: '/goals',
+  path: '/goals',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -81,18 +81,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRoute
     }
-    '/food-search': {
-      id: '/food-search'
-      path: '/food-search'
-      fullPath: '/food-search'
-      preLoaderRoute: typeof FoodSearchRouteImport
-      parentRoute: typeof rootRoute
-    }
     '/goals': {
       id: '/goals'
       path: '/goals'
       fullPath: '/goals'
       preLoaderRoute: typeof GoalsRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/meal-builder': {
+      id: '/meal-builder'
+      path: '/meal-builder'
+      fullPath: '/meal-builder'
+      preLoaderRoute: typeof MealBuilderRouteImport
       parentRoute: typeof rootRoute
     }
     '/nutrition': {
@@ -124,8 +124,8 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRoute
-  '/food-search': typeof FoodSearchRouteRoute
   '/goals': typeof GoalsRouteRoute
+  '/meal-builder': typeof MealBuilderRouteRoute
   '/nutrition': typeof NutritionRouteRoute
   '/trainers': typeof TrainersRouteRoute
   '/login': typeof LoginRoute
@@ -134,8 +134,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRoute
-  '/food-search': typeof FoodSearchRouteRoute
   '/goals': typeof GoalsRouteRoute
+  '/meal-builder': typeof MealBuilderRouteRoute
   '/nutrition': typeof NutritionRouteRoute
   '/trainers': typeof TrainersRouteRoute
   '/login': typeof LoginRoute
@@ -145,8 +145,8 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteRoute
-  '/food-search': typeof FoodSearchRouteRoute
   '/goals': typeof GoalsRouteRoute
+  '/meal-builder': typeof MealBuilderRouteRoute
   '/nutrition': typeof NutritionRouteRoute
   '/trainers': typeof TrainersRouteRoute
   '/login': typeof LoginRoute
@@ -157,8 +157,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
-    | '/food-search'
     | '/goals'
+    | '/meal-builder'
     | '/nutrition'
     | '/trainers'
     | '/login'
@@ -166,8 +166,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
-    | '/food-search'
     | '/goals'
+    | '/meal-builder'
     | '/nutrition'
     | '/trainers'
     | '/login'
@@ -175,8 +175,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/food-search'
     | '/goals'
+    | '/meal-builder'
     | '/nutrition'
     | '/trainers'
     | '/login'
@@ -186,8 +186,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRouteRoute: typeof DashboardRouteRoute
-  FoodSearchRouteRoute: typeof FoodSearchRouteRoute
   GoalsRouteRoute: typeof GoalsRouteRoute
+  MealBuilderRouteRoute: typeof MealBuilderRouteRoute
   NutritionRouteRoute: typeof NutritionRouteRoute
   TrainersRouteRoute: typeof TrainersRouteRoute
   LoginRoute: typeof LoginRoute
@@ -196,8 +196,8 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRouteRoute: DashboardRouteRoute,
-  FoodSearchRouteRoute: FoodSearchRouteRoute,
   GoalsRouteRoute: GoalsRouteRoute,
+  MealBuilderRouteRoute: MealBuilderRouteRoute,
   NutritionRouteRoute: NutritionRouteRoute,
   TrainersRouteRoute: TrainersRouteRoute,
   LoginRoute: LoginRoute,
@@ -215,8 +215,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/dashboard",
-        "/food-search",
         "/goals",
+        "/meal-builder",
         "/nutrition",
         "/trainers",
         "/login"
@@ -228,11 +228,11 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard/route.tsx"
     },
-    "/food-search": {
-      "filePath": "food-search/route.tsx"
-    },
     "/goals": {
       "filePath": "goals/route.tsx"
+    },
+    "/meal-builder": {
+      "filePath": "meal-builder/route.tsx"
     },
     "/nutrition": {
       "filePath": "nutrition/route.tsx"

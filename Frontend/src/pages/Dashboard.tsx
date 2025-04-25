@@ -13,9 +13,11 @@ import { useGetGoalsUserUserIdGoalsGet } from '../api/generated/fastAPI';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LoadingSpinner } from '../components/loading/LoadingSpinner';
 import { useNutritionAggregation } from '@/hooks/useNutritionAggregation';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
+import { UserSelect } from '@/components/goals/UserSelect';
+import { useGetTrainerUsersTrainerTrainerIdUsersGet } from '@/api/generated/fastAPI';
 
 ChartJS.register(
   CategoryScale,
@@ -30,12 +32,16 @@ ChartJS.register(
 export function Dashboard() {
   const { user } = useAuth0();
   const { isDarkMode } = useTheme();
-  const { data, todayData, isLoading } = useNutritionAggregation(user?.sub || null, 7);
-  const { data: goalsData, isLoading: isLoadingGoals } = useGetGoalsUserUserIdGoalsGet(user?.sub || '');
+  const [selectedUserId, setSelectedUserId] = useState(user?.sub || '');
+  const { data, todayData, isLoading } = useNutritionAggregation(selectedUserId, 7);
+  const { data: goalsData, isLoading: isLoadingGoals } = useGetGoalsUserUserIdGoalsGet(selectedUserId);
+  const { data: trainees } = useGetTrainerUsersTrainerTrainerIdUsersGet(user?.sub || '', {
+    status: 'active'
+  });
 
   const myGoals = useMemo(() => {
-    return goalsData?.filter(g => g.user_id === user?.sub)?.[0];
-  }, [goalsData, user?.sub]);
+    return goalsData?.filter(g => g.user_id === selectedUserId)?.[0];
+  }, [goalsData, selectedUserId]);
 
   const chartData = useMemo(() => ({
     labels: data.map(n => new Date(n.date).toLocaleDateString()),
@@ -68,12 +74,22 @@ export function Dashboard() {
     return <LoadingSpinner />;
   }
 
+  const hasTrainees = trainees && trainees.length > 0;
+
   return (
     <div className="space-y-6">
-      <h1 className={cn(
-        "text-2xl font-bold",
-        isDarkMode ? "text-white" : "text-gray-900"
-      )}>Dashboard</h1>
+      <div className="flex justify-between items-center">
+        <h1 className={cn(
+          "text-2xl font-bold",
+          isDarkMode ? "text-white" : "text-gray-900"
+        )}>Dashboard</h1>
+        {hasTrainees && (
+          <UserSelect
+            selectedUserId={selectedUserId}
+            onSelect={(user) => setSelectedUserId(user.user_id)}
+          />
+        )}
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className={cn(

@@ -5,7 +5,7 @@ import { LoadingSpinner } from '@/components/loading/LoadingSpinner';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useMealPlate } from '@/contexts/MealPlateContext';
 
-export function FoodSearch() {
+export function MealBuilder() {
   const [searchQuery, setSearchQuery] = useState('');
   const [query, setQuery] = useState('');
   const { isDarkMode } = useTheme();
@@ -30,7 +30,7 @@ export function FoodSearch() {
       <h1 className={cn(
         "text-2xl font-bold",
         isDarkMode ? "text-white" : "text-gray-900"
-      )}>Food Search</h1>
+      )}>Meal Builder</h1>
       
       <div className="relative">
         <input
