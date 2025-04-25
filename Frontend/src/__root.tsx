@@ -1,4 +1,4 @@
-import { Outlet, RouterProvider, createRouter } from '@tanstack/react-router';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
