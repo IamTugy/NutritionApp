@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime, timezone, timedelta
 import uuid
 import uvicorn
-from fastapi import FastAPI, Query, HTTPException
+from fastapi import FastAPI, Query, HTTPException, Depends
 
 from .food_external_api import search_nutrition_item, search_nutrition_items
 
@@ -13,6 +13,8 @@ from .models import (
     NutritionItem,
     NutritionSnapshot,
     NutritionSnapshotCreate,
+    TrainerUserRelationship,
+    TrainerUserRelationshipCreate,
 )
 from dotenv import load_dotenv
 
@@ -76,6 +78,7 @@ async def create_nutrition(user_id: str, snapshot: NutritionSnapshotCreate):
     new_snapshot = NutritionSnapshot(
             id=snapshot_id,
             user_id=snapshot.user_id or user_id,
+            created_by=user_id,
             date=datetime.now(timezone.utc),
             total_calories=sum(item.calories for item in items),
             items=items,
@@ -170,6 +173,7 @@ async def update_goals(user_id: str, goals: GoalsCreate):
         new_goal = Goals(
             id=goal_id,
             user_id=goals.user_id or user_id,
+            updated_by=user_id,
             updated_at=datetime.now(timezone.utc),
             total_calories=goals.total_calories,
             total_protein=goals.total_protein,
@@ -177,6 +181,106 @@ async def update_goals(user_id: str, goals: GoalsCreate):
         )
         await database.goals.insert_one(new_goal.model_dump())
         return new_goal
+
+@app.get("/user/{user_id}/trainers", response_model=list[TrainerUserRelationship])
+async def get_user_trainers(
+    user_id: str,
+    status: str | None = Query(None, description="Filter by relationship status (pending/active)")
+):
+    """Gets all trainers for a user with optional status filter."""
+    query = {"user_id": user_id}
+    if status:
+        if status not in ["pending", "active"]:
+            raise HTTPException(status_code=400, detail="Invalid status. Must be 'pending' or 'active'")
+        query["state"] = status
+    
+    relationships = []
+    async for doc in database.trainer_user_relationships.find(query):
+        relationships.append(TrainerUserRelationship.model_validate(doc))
+    return relationships
+
+@app.get("/trainer/{trainer_id}/users", response_model=list[TrainerUserRelationship])
+async def get_trainer_users(
+    trainer_id: str,
+    status: str | None = Query(None, description="Filter by relationship status (pending/active)")
+):
+    """Gets all users for a trainer with optional status filter."""
+    query = {"trainer_id": trainer_id}
+    if status:
+        if status not in ["pending", "active"]:
+            raise HTTPException(status_code=400, detail="Invalid status. Must be 'pending' or 'active'")
+        query["state"] = status
+    
+    relationships = []
+    async for doc in database.trainer_user_relationships.find(query):
+        relationships.append(TrainerUserRelationship.model_validate(doc))
+    return relationships
+
+@app.post("/user/{user_id}/connect-trainer/{trainer_id}", response_model=TrainerUserRelationship)
+async def connect_to_trainer(user_id: str, trainer_id: str):
+    """User initiates a connection request to a trainer."""
+    # Check if relationship already exists
+    existing = await database.trainer_user_relationships.find_one({
+        "trainer_id": trainer_id,
+        "user_id": user_id
+    })
+    
+    if existing:
+        return TrainerUserRelationship.model_validate(existing)
+    # Create new relationship with pending state
+    new_relationship = TrainerUserRelationship(
+        user_id=user_id,
+        trainer_id=trainer_id,
+        state="pending"
+    )
+    
+    await database.trainer_user_relationships.insert_one(new_relationship.model_dump())
+    return new_relationship
+
+@app.put("/trainer/{trainer_id}/accept-user/{user_id}", response_model=TrainerUserRelationship)
+async def accept_user_connection(trainer_id: str, user_id: str):
+    """Trainer accepts a user's connection request."""
+    # Check if relationship exists and is pending
+    existing = await database.trainer_user_relationships.find_one({
+        "trainer_id": trainer_id,
+        "user_id": user_id,
+        "state": "pending"
+    })
+    
+    if not existing:
+        raise HTTPException(status_code=404, detail="No pending connection request found")
+    
+    # Update the relationship to active
+    result = await database.trainer_user_relationships.find_one_and_update(
+        {"trainer_id": trainer_id, "user_id": user_id},
+        {
+            "$set": {
+                "state": "active",
+                "updated_at": datetime.now(timezone.utc)
+            }
+        },
+        return_document=True
+    )
+    
+    return TrainerUserRelationship.model_validate(result)
+
+@app.delete("/user/{user_id}/disconnect-trainer/{trainer_id}")
+async def user_disconnect_trainer(user_id: str, trainer_id: str):
+    """User disconnects from a trainer."""
+    return await trainer_disconnect_user(trainer_id=trainer_id, user_id=user_id)
+
+@app.delete("/trainer/{trainer_id}/disconnect-user/{user_id}")
+async def trainer_disconnect_user(trainer_id: str, user_id: str):
+    """Trainer disconnects from a user."""
+    result = await database.trainer_user_relationships.delete_one({
+        "trainer_id": trainer_id,
+        "user_id": user_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Connection not found")
+    
+    return {"message": "Connection removed successfully"}
 
 def start():
     """Starts the FastAPI application."""

@@ -26,6 +26,8 @@ import type {
 
 import type {
   GetNutritionUsersUserIdNutritionsGetParams,
+  GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  GetUserTrainersUserUserIdTrainersGetParams,
   Goals,
   GoalsCreate,
   HTTPValidationError,
@@ -33,6 +35,7 @@ import type {
   NutritionSnapshot,
   NutritionSnapshotCreate,
   SearchFoodSearchGetParams,
+  TrainerUserRelationship,
 } from './model'
 
 import { customInstance } from '../mutator/custom-instance'
@@ -2185,3 +2188,1265 @@ export const useUpdateGoalsUserUserIdGoalsPut = <
 
   return useMutation(mutationOptions, queryClient)
 }
+
+/**
+ * Gets all trainers for a user with optional status filter.
+ * @summary Get User Trainers
+ */
+export const getUserTrainersUserUserIdTrainersGet = (
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<TrainerUserRelationship[]>(
+    { url: `/user/${userId}/trainers`, method: 'GET', params, signal },
+    options,
+  )
+}
+
+export const getGetUserTrainersUserUserIdTrainersGetQueryKey = (
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+) => {
+  return [`/user/${userId}/trainers`, ...(params ? [params] : [])] as const
+}
+
+export const getGetUserTrainersUserUserIdTrainersGetInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+    GetUserTrainersUserUserIdTrainersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        QueryKey,
+        GetUserTrainersUserUserIdTrainersGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGetUserTrainersUserUserIdTrainersGetQueryKey(userId, params)
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+    QueryKey,
+    GetUserTrainersUserUserIdTrainersGetParams['page']
+  > = ({ signal, pageParam }) =>
+    getUserTrainersUserUserIdTrainersGet(
+      userId,
+      { ...params, page: pageParam || params?.['page'] },
+      requestOptions,
+      signal,
+    )
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+    QueryKey,
+    GetUserTrainersUserUserIdTrainersGetParams['page']
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetUserTrainersUserUserIdTrainersGetInfiniteQueryResult =
+  NonNullable<Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>>
+export type GetUserTrainersUserUserIdTrainersGetInfiniteQueryError =
+  ErrorType<HTTPValidationError>
+
+export function useGetUserTrainersUserUserIdTrainersGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+    GetUserTrainersUserUserIdTrainersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params: undefined | GetUserTrainersUserUserIdTrainersGetParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        QueryKey,
+        GetUserTrainersUserUserIdTrainersGetParams['page']
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+          TError,
+          Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+          QueryKey
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserTrainersUserUserIdTrainersGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+    GetUserTrainersUserUserIdTrainersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        QueryKey,
+        GetUserTrainersUserUserIdTrainersGetParams['page']
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+          TError,
+          Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+          QueryKey
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserTrainersUserUserIdTrainersGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+    GetUserTrainersUserUserIdTrainersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        QueryKey,
+        GetUserTrainersUserUserIdTrainersGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+/**
+ * @summary Get User Trainers
+ */
+
+export function useGetUserTrainersUserUserIdTrainersGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+    GetUserTrainersUserUserIdTrainersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        QueryKey,
+        GetUserTrainersUserUserIdTrainersGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions =
+    getGetUserTrainersUserUserIdTrainersGetInfiniteQueryOptions(
+      userId,
+      params,
+      options,
+    )
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
+export const getGetUserTrainersUserUserIdTrainersGetQueryOptions = <
+  TData = Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGetUserTrainersUserUserIdTrainersGetQueryKey(userId, params)
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>
+  > = ({ signal }) =>
+    getUserTrainersUserUserIdTrainersGet(userId, params, requestOptions, signal)
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetUserTrainersUserUserIdTrainersGetQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>
+>
+export type GetUserTrainersUserUserIdTrainersGetQueryError =
+  ErrorType<HTTPValidationError>
+
+export function useGetUserTrainersUserUserIdTrainersGet<
+  TData = Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params: undefined | GetUserTrainersUserUserIdTrainersGetParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+          TError,
+          Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserTrainersUserUserIdTrainersGet<
+  TData = Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+          TError,
+          Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetUserTrainersUserUserIdTrainersGet<
+  TData = Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+/**
+ * @summary Get User Trainers
+ */
+
+export function useGetUserTrainersUserUserIdTrainersGet<
+  TData = Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  userId: string,
+  params?: GetUserTrainersUserUserIdTrainersGetParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getUserTrainersUserUserIdTrainersGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getGetUserTrainersUserUserIdTrainersGetQueryOptions(
+    userId,
+    params,
+    options,
+  )
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
+/**
+ * Gets all users for a trainer with optional status filter.
+ * @summary Get Trainer Users
+ */
+export const getTrainerUsersTrainerTrainerIdUsersGet = (
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<TrainerUserRelationship[]>(
+    { url: `/trainer/${trainerId}/users`, method: 'GET', params, signal },
+    options,
+  )
+}
+
+export const getGetTrainerUsersTrainerTrainerIdUsersGetQueryKey = (
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+) => {
+  return [`/trainer/${trainerId}/users`, ...(params ? [params] : [])] as const
+}
+
+export const getGetTrainerUsersTrainerTrainerIdUsersGetInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+    GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        QueryKey,
+        GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGetTrainerUsersTrainerTrainerIdUsersGetQueryKey(trainerId, params)
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+    QueryKey,
+    GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+  > = ({ signal, pageParam }) =>
+    getTrainerUsersTrainerTrainerIdUsersGet(
+      trainerId,
+      { ...params, page: pageParam || params?.['page'] },
+      requestOptions,
+      signal,
+    )
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!trainerId,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+    TError,
+    TData,
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+    QueryKey,
+    GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTrainerUsersTrainerTrainerIdUsersGetInfiniteQueryResult =
+  NonNullable<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>
+  >
+export type GetTrainerUsersTrainerTrainerIdUsersGetInfiniteQueryError =
+  ErrorType<HTTPValidationError>
+
+export function useGetTrainerUsersTrainerTrainerIdUsersGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+    GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params: undefined | GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        QueryKey,
+        GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+          TError,
+          Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+          QueryKey
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetTrainerUsersTrainerTrainerIdUsersGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+    GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        QueryKey,
+        GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+          TError,
+          Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+          QueryKey
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetTrainerUsersTrainerTrainerIdUsersGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+    GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        QueryKey,
+        GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+/**
+ * @summary Get Trainer Users
+ */
+
+export function useGetTrainerUsersTrainerTrainerIdUsersGetInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+    GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+  >,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData,
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        QueryKey,
+        GetTrainerUsersTrainerTrainerIdUsersGetParams['page']
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions =
+    getGetTrainerUsersTrainerTrainerIdUsersGetInfiniteQueryOptions(
+      trainerId,
+      params,
+      options,
+    )
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>
+  }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
+export const getGetTrainerUsersTrainerTrainerIdUsersGetQueryOptions = <
+  TData = Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {}
+
+  const queryKey =
+    queryOptions?.queryKey ??
+    getGetTrainerUsersTrainerTrainerIdUsersGetQueryKey(trainerId, params)
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>
+  > = ({ signal }) =>
+    getTrainerUsersTrainerTrainerIdUsersGet(
+      trainerId,
+      params,
+      requestOptions,
+      signal,
+    )
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!trainerId,
+    staleTime: 10000,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTrainerUsersTrainerTrainerIdUsersGetQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>
+>
+export type GetTrainerUsersTrainerTrainerIdUsersGetQueryError =
+  ErrorType<HTTPValidationError>
+
+export function useGetTrainerUsersTrainerTrainerIdUsersGet<
+  TData = Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params: undefined | GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+          TError,
+          Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetTrainerUsersTrainerTrainerIdUsersGet<
+  TData = Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+          TError,
+          Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>
+        >,
+        'initialData'
+      >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+export function useGetTrainerUsersTrainerTrainerIdUsersGet<
+  TData = Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+}
+/**
+ * @summary Get Trainer Users
+ */
+
+export function useGetTrainerUsersTrainerTrainerIdUsersGet<
+  TData = Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+  TError = ErrorType<HTTPValidationError>,
+>(
+  trainerId: string,
+  params?: GetTrainerUsersTrainerTrainerIdUsersGetParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof getTrainerUsersTrainerTrainerIdUsersGet>>,
+        TError,
+        TData
+      >
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>
+} {
+  const queryOptions = getGetTrainerUsersTrainerTrainerIdUsersGetQueryOptions(
+    trainerId,
+    params,
+    options,
+  )
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> }
+
+  query.queryKey = queryOptions.queryKey
+
+  return query
+}
+
+/**
+ * User initiates a connection request to a trainer.
+ * @summary Connect To Trainer
+ */
+export const connectToTrainerUserUserIdConnectTrainerTrainerIdPost = (
+  userId: string,
+  trainerId: string,
+  options?: SecondParameter<typeof customInstance>,
+  signal?: AbortSignal,
+) => {
+  return customInstance<TrainerUserRelationship>(
+    {
+      url: `/user/${userId}/connect-trainer/${trainerId}`,
+      method: 'POST',
+      signal,
+    },
+    options,
+  )
+}
+
+export const getConnectToTrainerUserUserIdConnectTrainerTrainerIdPostMutationOptions =
+  <TError = ErrorType<HTTPValidationError>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<
+      Awaited<
+        ReturnType<typeof connectToTrainerUserUserIdConnectTrainerTrainerIdPost>
+      >,
+      TError,
+      { userId: string; trainerId: string },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  }): UseMutationOptions<
+    Awaited<
+      ReturnType<typeof connectToTrainerUserUserIdConnectTrainerTrainerIdPost>
+    >,
+    TError,
+    { userId: string; trainerId: string },
+    TContext
+  > => {
+    const mutationKey = [
+      'connectToTrainerUserUserIdConnectTrainerTrainerIdPost',
+    ]
+    const { mutation: mutationOptions, request: requestOptions } = options
+      ? options.mutation &&
+        'mutationKey' in options.mutation &&
+        options.mutation.mutationKey
+        ? options
+        : { ...options, mutation: { ...options.mutation, mutationKey } }
+      : { mutation: { mutationKey }, request: undefined }
+
+    const mutationFn: MutationFunction<
+      Awaited<
+        ReturnType<typeof connectToTrainerUserUserIdConnectTrainerTrainerIdPost>
+      >,
+      { userId: string; trainerId: string }
+    > = (props) => {
+      const { userId, trainerId } = props ?? {}
+
+      return connectToTrainerUserUserIdConnectTrainerTrainerIdPost(
+        userId,
+        trainerId,
+        requestOptions,
+      )
+    }
+
+    return { mutationFn, ...mutationOptions }
+  }
+
+export type ConnectToTrainerUserUserIdConnectTrainerTrainerIdPostMutationResult =
+  NonNullable<
+    Awaited<
+      ReturnType<typeof connectToTrainerUserUserIdConnectTrainerTrainerIdPost>
+    >
+  >
+
+export type ConnectToTrainerUserUserIdConnectTrainerTrainerIdPostMutationError =
+  ErrorType<HTTPValidationError>
+
+/**
+ * @summary Connect To Trainer
+ */
+export const useConnectToTrainerUserUserIdConnectTrainerTrainerIdPost = <
+  TError = ErrorType<HTTPValidationError>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<
+        ReturnType<typeof connectToTrainerUserUserIdConnectTrainerTrainerIdPost>
+      >,
+      TError,
+      { userId: string; trainerId: string },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<
+    ReturnType<typeof connectToTrainerUserUserIdConnectTrainerTrainerIdPost>
+  >,
+  TError,
+  { userId: string; trainerId: string },
+  TContext
+> => {
+  const mutationOptions =
+    getConnectToTrainerUserUserIdConnectTrainerTrainerIdPostMutationOptions(
+      options,
+    )
+
+  return useMutation(mutationOptions, queryClient)
+}
+
+/**
+ * Trainer accepts a user's connection request.
+ * @summary Accept User Connection
+ */
+export const acceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut = (
+  trainerId: string,
+  userId: string,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<TrainerUserRelationship>(
+    { url: `/trainer/${trainerId}/accept-user/${userId}`, method: 'PUT' },
+    options,
+  )
+}
+
+export const getAcceptUserConnectionTrainerTrainerIdAcceptUserUserIdPutMutationOptions =
+  <TError = ErrorType<HTTPValidationError>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<
+      Awaited<
+        ReturnType<
+          typeof acceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut
+        >
+      >,
+      TError,
+      { trainerId: string; userId: string },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  }): UseMutationOptions<
+    Awaited<
+      ReturnType<typeof acceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut>
+    >,
+    TError,
+    { trainerId: string; userId: string },
+    TContext
+  > => {
+    const mutationKey = [
+      'acceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut',
+    ]
+    const { mutation: mutationOptions, request: requestOptions } = options
+      ? options.mutation &&
+        'mutationKey' in options.mutation &&
+        options.mutation.mutationKey
+        ? options
+        : { ...options, mutation: { ...options.mutation, mutationKey } }
+      : { mutation: { mutationKey }, request: undefined }
+
+    const mutationFn: MutationFunction<
+      Awaited<
+        ReturnType<
+          typeof acceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut
+        >
+      >,
+      { trainerId: string; userId: string }
+    > = (props) => {
+      const { trainerId, userId } = props ?? {}
+
+      return acceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut(
+        trainerId,
+        userId,
+        requestOptions,
+      )
+    }
+
+    return { mutationFn, ...mutationOptions }
+  }
+
+export type AcceptUserConnectionTrainerTrainerIdAcceptUserUserIdPutMutationResult =
+  NonNullable<
+    Awaited<
+      ReturnType<typeof acceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut>
+    >
+  >
+
+export type AcceptUserConnectionTrainerTrainerIdAcceptUserUserIdPutMutationError =
+  ErrorType<HTTPValidationError>
+
+/**
+ * @summary Accept User Connection
+ */
+export const useAcceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut = <
+  TError = ErrorType<HTTPValidationError>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<
+        ReturnType<
+          typeof acceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut
+        >
+      >,
+      TError,
+      { trainerId: string; userId: string },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<
+    ReturnType<typeof acceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut>
+  >,
+  TError,
+  { trainerId: string; userId: string },
+  TContext
+> => {
+  const mutationOptions =
+    getAcceptUserConnectionTrainerTrainerIdAcceptUserUserIdPutMutationOptions(
+      options,
+    )
+
+  return useMutation(mutationOptions, queryClient)
+}
+
+/**
+ * User disconnects from a trainer.
+ * @summary User Disconnect Trainer
+ */
+export const userDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete = (
+  userId: string,
+  trainerId: string,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<unknown>(
+    {
+      url: `/user/${userId}/disconnect-trainer/${trainerId}`,
+      method: 'DELETE',
+    },
+    options,
+  )
+}
+
+export const getUserDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDeleteMutationOptions =
+  <TError = ErrorType<HTTPValidationError>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<
+      Awaited<
+        ReturnType<
+          typeof userDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete
+        >
+      >,
+      TError,
+      { userId: string; trainerId: string },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  }): UseMutationOptions<
+    Awaited<
+      ReturnType<
+        typeof userDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete
+      >
+    >,
+    TError,
+    { userId: string; trainerId: string },
+    TContext
+  > => {
+    const mutationKey = [
+      'userDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete',
+    ]
+    const { mutation: mutationOptions, request: requestOptions } = options
+      ? options.mutation &&
+        'mutationKey' in options.mutation &&
+        options.mutation.mutationKey
+        ? options
+        : { ...options, mutation: { ...options.mutation, mutationKey } }
+      : { mutation: { mutationKey }, request: undefined }
+
+    const mutationFn: MutationFunction<
+      Awaited<
+        ReturnType<
+          typeof userDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete
+        >
+      >,
+      { userId: string; trainerId: string }
+    > = (props) => {
+      const { userId, trainerId } = props ?? {}
+
+      return userDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete(
+        userId,
+        trainerId,
+        requestOptions,
+      )
+    }
+
+    return { mutationFn, ...mutationOptions }
+  }
+
+export type UserDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDeleteMutationResult =
+  NonNullable<
+    Awaited<
+      ReturnType<
+        typeof userDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete
+      >
+    >
+  >
+
+export type UserDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDeleteMutationError =
+  ErrorType<HTTPValidationError>
+
+/**
+ * @summary User Disconnect Trainer
+ */
+export const useUserDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete =
+  <TError = ErrorType<HTTPValidationError>, TContext = unknown>(
+    options?: {
+      mutation?: UseMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof userDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete
+          >
+        >,
+        TError,
+        { userId: string; trainerId: string },
+        TContext
+      >
+      request?: SecondParameter<typeof customInstance>
+    },
+    queryClient?: QueryClient,
+  ): UseMutationResult<
+    Awaited<
+      ReturnType<
+        typeof userDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete
+      >
+    >,
+    TError,
+    { userId: string; trainerId: string },
+    TContext
+  > => {
+    const mutationOptions =
+      getUserDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDeleteMutationOptions(
+        options,
+      )
+
+    return useMutation(mutationOptions, queryClient)
+  }
+
+/**
+ * Trainer disconnects from a user.
+ * @summary Trainer Disconnect User
+ */
+export const trainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete = (
+  trainerId: string,
+  userId: string,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<unknown>(
+    {
+      url: `/trainer/${trainerId}/disconnect-user/${userId}`,
+      method: 'DELETE',
+    },
+    options,
+  )
+}
+
+export const getTrainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDeleteMutationOptions =
+  <TError = ErrorType<HTTPValidationError>, TContext = unknown>(options?: {
+    mutation?: UseMutationOptions<
+      Awaited<
+        ReturnType<
+          typeof trainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete
+        >
+      >,
+      TError,
+      { trainerId: string; userId: string },
+      TContext
+    >
+    request?: SecondParameter<typeof customInstance>
+  }): UseMutationOptions<
+    Awaited<
+      ReturnType<
+        typeof trainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete
+      >
+    >,
+    TError,
+    { trainerId: string; userId: string },
+    TContext
+  > => {
+    const mutationKey = [
+      'trainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete',
+    ]
+    const { mutation: mutationOptions, request: requestOptions } = options
+      ? options.mutation &&
+        'mutationKey' in options.mutation &&
+        options.mutation.mutationKey
+        ? options
+        : { ...options, mutation: { ...options.mutation, mutationKey } }
+      : { mutation: { mutationKey }, request: undefined }
+
+    const mutationFn: MutationFunction<
+      Awaited<
+        ReturnType<
+          typeof trainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete
+        >
+      >,
+      { trainerId: string; userId: string }
+    > = (props) => {
+      const { trainerId, userId } = props ?? {}
+
+      return trainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete(
+        trainerId,
+        userId,
+        requestOptions,
+      )
+    }
+
+    return { mutationFn, ...mutationOptions }
+  }
+
+export type TrainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDeleteMutationResult =
+  NonNullable<
+    Awaited<
+      ReturnType<
+        typeof trainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete
+      >
+    >
+  >
+
+export type TrainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDeleteMutationError =
+  ErrorType<HTTPValidationError>
+
+/**
+ * @summary Trainer Disconnect User
+ */
+export const useTrainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete =
+  <TError = ErrorType<HTTPValidationError>, TContext = unknown>(
+    options?: {
+      mutation?: UseMutationOptions<
+        Awaited<
+          ReturnType<
+            typeof trainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete
+          >
+        >,
+        TError,
+        { trainerId: string; userId: string },
+        TContext
+      >
+      request?: SecondParameter<typeof customInstance>
+    },
+    queryClient?: QueryClient,
+  ): UseMutationResult<
+    Awaited<
+      ReturnType<
+        typeof trainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete
+      >
+    >,
+    TError,
+    { trainerId: string; userId: string },
+    TContext
+  > => {
+    const mutationOptions =
+      getTrainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDeleteMutationOptions(
+        options,
+      )
+
+    return useMutation(mutationOptions, queryClient)
+  }

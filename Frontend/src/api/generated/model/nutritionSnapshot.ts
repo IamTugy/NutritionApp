@@ -4,6 +4,7 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
+import type { NutritionSnapshotCreatedBy } from './nutritionSnapshotCreatedBy'
 import type { NutritionItem } from './nutritionItem'
 
 /**
@@ -14,6 +15,8 @@ export interface NutritionSnapshot {
   id: string
   /** The user's unique identifier */
   user_id: string
+  /** The user's unique identifier who created the snapshot - allows creating snapshots for other users, after checking permissions */
+  created_by?: NutritionSnapshotCreatedBy
   /** The date and time the snapshot was taken */
   date: string
   /** The total number of calories consumed in the snapshot */

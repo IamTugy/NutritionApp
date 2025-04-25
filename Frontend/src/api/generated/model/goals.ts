@@ -4,6 +4,7 @@
  * FastAPI
  * OpenAPI spec version: 0.1.0
  */
+import type { GoalsUpdatedBy } from './goalsUpdatedBy'
 import type { GoalsTotalCalories } from './goalsTotalCalories'
 import type { GoalsTotalProtein } from './goalsTotalProtein'
 import type { GoalsTotalWaterIntake } from './goalsTotalWaterIntake'
@@ -16,6 +17,8 @@ export interface Goals {
   id: string
   /** The user's unique identifier */
   user_id: string
+  /** The user's unique identifier who updated the goal - allows updating goals for other users, after checking permissions */
+  updated_by?: GoalsUpdatedBy
   /** The date and time the goal was last updated */
   updated_at?: string
   /** The total number of calories to consume in a day */

@@ -30,7 +30,7 @@ export function Sidebar() {
   const className = cn(
     'group flex items-center p-2 text-base font-medium rounded-md',
     isDarkMode 
-      ? '[&.active]:bg-gray-700 [&.active]:text-white text-gray-300 hover:bg-gray-700 hover:text-white' 
+      ? '[&.active]:bg-gray-600 [&.active]:text-white text-gray-300 hover:bg-gray-700 hover:text-white' 
       : '[&.active]:bg-gray-100 [&.active]:text-gray-900 text-gray-600 hover:bg-gray-50 hover:text-gray-900'
   );
 
@@ -82,6 +82,13 @@ export function Sidebar() {
             onClick={() => toggle()}
           >
             Food Search
+          </Link>
+          <Link
+            to="/trainers"
+            className={className}
+            onClick={() => toggle()}
+          >
+            Trainers
           </Link>
         </nav>
       </div>

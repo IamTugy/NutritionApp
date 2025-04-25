@@ -26,6 +26,10 @@ class NutritionSnapshot(BaseModel):
 
     id: uuid.UUID = Field(description="The unique identifier of the snapshot")
     user_id: str = Field(description="The user's unique identifier")
+    created_by: str | None = Field(
+        default=None,
+        description="The user's unique identifier who created the snapshot - allows creating snapshots for other users, after checking permissions",
+    )
     date: datetime.datetime = Field(
         description="The date and time the snapshot was taken"
     )
@@ -54,6 +58,10 @@ class Goals(BaseModel):
 
     id: uuid.UUID = Field(description="The unique identifier of the goal")
     user_id: str = Field(description="The user's unique identifier")
+    updated_by: str | None = Field(
+        default=None,
+        description="The user's unique identifier who updated the goal - allows updating goals for other users, after checking permissions",
+    )
     updated_at: datetime.datetime = Field(
         default_factory=lambda: datetime.datetime.now(datetime.timezone.utc),
         description="The date and time the goal was last updated",
@@ -84,4 +92,36 @@ class GoalsCreate(BaseModel):
     )
     total_water_intake: float | None = Field(
         default=None, description="The total number of water to consume in a day in grams"
+    )
+
+
+class TrainerUserRelationship(BaseModel):
+    """Represents a relationship between a trainer and a user"""
+    
+    user_id: str = Field(description="The user's unique identifier")
+    trainer_id: str = Field(description="The trainer's unique identifier")
+    state: str = Field(
+        default="pending",
+        description="The state of the relationship",
+        pattern="^(pending|active)$"
+    )
+    created_at: datetime.datetime = Field(
+        default_factory=lambda: datetime.datetime.now(datetime.timezone.utc),
+        description="When the relationship was created"
+    )
+    updated_at: datetime.datetime = Field(
+        default_factory=lambda: datetime.datetime.now(datetime.timezone.utc),
+        description="When the relationship was last updated"
+    )
+
+
+class TrainerUserRelationshipCreate(BaseModel):
+    """Create a new trainer-user relationship"""
+    
+    user_id: str = Field(description="The user's unique identifier")
+    trainer_id: str = Field(description="The trainer's unique identifier")
+    state: str = Field(
+        default="pending",
+        description="The initial state of the relationship",
+        pattern="^(pending|active)$"
     )

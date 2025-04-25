@@ -3,7 +3,7 @@ export const auth0Config = {
   clientId: import.meta.env.VITE_AUTH0_CLIENT_ID || '',
   authorizationParams: {
     redirect_uri: window.location.origin,
-    audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-    scope: 'openid profile email',
+    audience: `https://${import.meta.env.VITE_AUTH0_DOMAIN}/api/v2/`,
+    scope: 'openid profile email read:users',
   },
 }; 

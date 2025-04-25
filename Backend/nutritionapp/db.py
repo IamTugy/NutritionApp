@@ -14,5 +14,6 @@ class Database():
         self.foods = self.db["foods"]
         self.snapshots = self.db["snapshots"]
         self.goals = self.db["goals"]
+        self.trainer_user_relationships = self.db["trainer_user_relationships"]
         
 database = Database()
