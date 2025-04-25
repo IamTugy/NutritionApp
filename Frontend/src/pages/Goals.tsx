@@ -4,8 +4,11 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { GoalCard } from '../components/goals/GoalCard';
 import { LoadingSpinner } from '../components/loading/LoadingSpinner';
 import { useNutritionAggregation } from '@/hooks/useNutritionAggregation';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/utils/tw';
 
 export function Goals() {
+  const { isDarkMode } = useTheme();
   const { user } = useAuth0();
   const { data: goalsData, isLoading: isLoadingGoals, refetch } = useGetGoalsUserUserIdGoalsGet(user?.sub || '');
   const { mutate: updateGoals } = useUpdateGoalsUserUserIdGoalsPut({
@@ -35,7 +38,10 @@ export function Goals() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Goals</h1>
+      <h1 className={cn(
+        "text-2xl font-bold",
+        isDarkMode ? "text-white" : "text-gray-900"
+      )}>Goals</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <GoalCard
