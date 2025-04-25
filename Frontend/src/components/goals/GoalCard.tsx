@@ -11,9 +11,10 @@ interface GoalCardProps {
   title: string;
   unit: string;
   color: string;
+  presetValues: number[];
 }
 
-export function GoalCard({ goal, currentValue, onUpdateGoal, type, title, unit, color }: GoalCardProps) {
+export function GoalCard({ goal, currentValue, onUpdateGoal, type, title, unit, color, presetValues }: GoalCardProps) {
   const [isEditing, setIsEditing] = useState(!goal);
   const [goalValue, setGoalValue] = useState(goal?.[type]?.toString() || '');
   const { isDarkMode } = useTheme();
@@ -86,27 +87,15 @@ export function GoalCard({ goal, currentValue, onUpdateGoal, type, title, unit, 
           )}>
             <p>Common {title.toLowerCase()} goals:</p>
             <div className="mt-2 space-x-2">
-              {type === 'total_calories' && (
-                <>
-                  <button onClick={() => setGoalValue("2000")} className="text-blue-500 hover:text-blue-600 cursor-pointer">2,000</button>
-                  <button onClick={() => setGoalValue("2500")} className="text-blue-500 hover:text-blue-600 cursor-pointer">2,500</button>
-                  <button onClick={() => setGoalValue("3000")} className="text-blue-500 hover:text-blue-600 cursor-pointer">3,000</button>
-                </>
-              )}
-              {type === 'total_protein' && (
-                <>
-                  <button onClick={() => setGoalValue("100")} className="text-blue-500 hover:text-blue-600 cursor-pointer">100g</button>
-                  <button onClick={() => setGoalValue("150")} className="text-blue-500 hover:text-blue-600 cursor-pointer">150g</button>
-                  <button onClick={() => setGoalValue("200")} className="text-blue-500 hover:text-blue-600 cursor-pointer">200g</button>
-                </>
-              )}
-              {type === 'total_water_intake' && (
-                <>
-                  <button onClick={() => setGoalValue("2")} className="text-blue-500 hover:text-blue-600 cursor-pointer">2L</button>
-                  <button onClick={() => setGoalValue("2.5")} className="text-blue-500 hover:text-blue-600 cursor-pointer">2.5L</button>
-                  <button onClick={() => setGoalValue("3")} className="text-blue-500 hover:text-blue-600 cursor-pointer">3L</button>
-                </>
-              )}
+              {presetValues.map((value) => (
+                <button 
+                  key={value} 
+                  onClick={() => setGoalValue(value.toString())} 
+                  className="text-blue-500 hover:text-blue-600 cursor-pointer"
+                >
+                  {value}{unit}
+                </button>
+              ))}
             </div>
           </div>
         </div>

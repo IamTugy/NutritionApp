@@ -81,10 +81,10 @@ export function Nutrition() {
                 </svg>
               </button>
             </div>
-            <div className="mt-2 space-y-2">
+            <div className="mt-2 space-y-2 max-h-[125px] overflow-y-auto">
               {nutrition.items.map((item, index) => (
                 <div key={index} className={cn(
-                  "flex justify-between text-sm",
+                  "flex justify-between text-sm pr-4",
                   isDarkMode ? "text-gray-300" : "text-gray-900"
                 )}>
                   <span>{item.food_name}</span>

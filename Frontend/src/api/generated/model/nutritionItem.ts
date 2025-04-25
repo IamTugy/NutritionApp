@@ -13,13 +13,13 @@ export interface NutritionItem {
   food_name: string
   /** The number of calories in the item */
   calories: number
-  /** The number of protein in the item */
+  /** The number of protein in the item in grams */
   protein?: number
-  /** The number of fat in the item */
+  /** The number of fat in the item in grams */
   fat?: number
-  /** The number of carbohydrates in the item */
+  /** The number of carbohydrates in the item in grams */
   carbohydrates?: number
-  /** The number of fiber in the item */
+  /** The number of fiber in the item in grams */
   fiber?: number
   /** The number of water in the item in grams */
   water?: number

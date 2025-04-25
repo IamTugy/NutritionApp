@@ -16,7 +16,7 @@ export function Navbar() {
       "shadow-lg h-16",
       isDarkMode ? "bg-gray-800" : "bg-white"
     )}>
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center space-x-4">
             {isAuthenticated && (

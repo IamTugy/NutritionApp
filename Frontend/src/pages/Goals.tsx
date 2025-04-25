@@ -16,7 +16,7 @@ export function Goals() {
     }
   });
 
-  const { data, isLoading } = useNutritionAggregation(user?.sub || null, 1);
+  const { todayData, isLoading } = useNutritionAggregation(user?.sub || null, 1);
 
   if (isLoadingGoals || isLoading) {
     return <LoadingSpinner />;
@@ -40,30 +40,33 @@ export function Goals() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <GoalCard
           goal={goal}
-          currentValue={data[0].total_calories}
+          currentValue={todayData.total_calories}
           onUpdateGoal={handleUpdateGoal}
           type="total_calories"
           title="Calories"
-          unit="calories"
+          unit="cal"
           color="bg-blue-600"
+          presetValues={[2000, 2500, 3000]}
         />
         <GoalCard
           goal={goal}
-          currentValue={data[0].total_protein}
+          currentValue={todayData.total_protein}
           onUpdateGoal={handleUpdateGoal}
           type="total_protein"
           title="Protein"
           unit="g"
           color="bg-green-600"
+          presetValues={[100, 150, 200]}
         />
         <GoalCard
           goal={goal}
-          currentValue={data[0].total_water}
+          currentValue={todayData.total_water}
           onUpdateGoal={handleUpdateGoal}
           type="total_water_intake"
           title="Water"
-          unit="L"
+          unit="g"
           color="bg-blue-400"
+          presetValues={[2000, 2500, 3000]}
         />
       </div>
     </div>

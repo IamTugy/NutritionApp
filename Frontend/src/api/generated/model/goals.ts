@@ -20,8 +20,8 @@ export interface Goals {
   updated_at?: string
   /** The total number of calories to consume in a day */
   total_calories?: GoalsTotalCalories
-  /** The total number of protein to consume in a day */
+  /** The total number of protein to consume in a day in grams */
   total_protein?: GoalsTotalProtein
-  /** The total number of water to consume in a day */
+  /** The total number of water to consume in a day in grams */
   total_water_intake?: GoalsTotalWaterIntake
 }

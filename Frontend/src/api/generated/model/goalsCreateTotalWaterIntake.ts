@@ -6,6 +6,6 @@
  */
 
 /**
- * The total number of water to consume in a day
+ * The total number of water to consume in a day in grams
  */
 export type GoalsCreateTotalWaterIntake = number | null

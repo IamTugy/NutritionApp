@@ -10,12 +10,12 @@ class NutritionItem(BaseModel):
         description="The name of the item", examples=["Apple", "Banana"]
     )
     calories: float = Field(description="The number of calories in the item")
-    protein: float = Field(default=0.0, description="The number of protein in the item")
-    fat: float = Field(default=0.0, description="The number of fat in the item")
+    protein: float = Field(default=0.0, description="The number of protein in the item in grams")
+    fat: float = Field(default=0.0, description="The number of fat in the item in grams")
     carbohydrates: float = Field(
-        default=0.0, description="The number of carbohydrates in the item"
+        default=0.0, description="The number of carbohydrates in the item in grams"
     )
-    fiber: float = Field(default=0.0, description="The number of fiber in the item")
+    fiber: float = Field(default=0.0, description="The number of fiber in the item in grams")
     water: float = Field(
         default=0.0, description="The number of water in the item in grams"
     )
@@ -62,10 +62,10 @@ class Goals(BaseModel):
         default=None, description="The total number of calories to consume in a day"
     )
     total_protein: int | None = Field(
-        default=None, description="The total number of protein to consume in a day"
+        default=None, description="The total number of protein to consume in a day in grams"
     )
     total_water_intake: float | None = Field(
-        default=None, description="The total number of water to consume in a day"
+        default=None, description="The total number of water to consume in a day in grams"
     )
 
 
@@ -80,8 +80,8 @@ class GoalsCreate(BaseModel):
         default=None, description="The total number of calories to consume in a day"
     )
     total_protein: int | None = Field(
-        default=None, description="The total number of protein to consume in a day"
+        default=None, description="The total number of protein to consume in a day in grams"
     )
     total_water_intake: float | None = Field(
-        default=None, description="The total number of water to consume in a day"
+        default=None, description="The total number of water to consume in a day in grams"
     )

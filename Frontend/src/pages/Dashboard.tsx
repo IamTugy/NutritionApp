@@ -13,7 +13,7 @@ import { useGetGoalsUserUserIdGoalsGet } from '../api/generated/fastAPI';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LoadingSpinner } from '../components/loading/LoadingSpinner';
 import { useNutritionAggregation } from '@/hooks/useNutritionAggregation';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
 
@@ -30,9 +30,8 @@ ChartJS.register(
 export function Dashboard() {
   const { user } = useAuth0();
   const { isDarkMode } = useTheme();
-  const { data, isLoading } = useNutritionAggregation(user?.sub || null, 7);
+  const { data, todayData, isLoading } = useNutritionAggregation(user?.sub || null, 7);
   const { data: goalsData, isLoading: isLoadingGoals } = useGetGoalsUserUserIdGoalsGet(user?.sub || '');
-  const { data: todaysNutritionData, isLoading: isLoadingTodaysNutrition } = useNutritionAggregation(user?.sub || null, 1);
 
   const myGoals = useMemo(() => {
     return goalsData?.filter(g => g.user_id === user?.sub)?.[0];
@@ -65,7 +64,7 @@ export function Dashboard() {
     ],
   }), [data, myGoals?.total_calories]);
 
-  if (isLoading || isLoadingGoals || isLoadingTodaysNutrition) {
+  if (isLoading || isLoadingGoals) {
     return <LoadingSpinner />;
   }
 
@@ -85,7 +84,7 @@ export function Dashboard() {
             "text-lg font-semibold mb-2",
             isDarkMode ? "text-white" : "text-gray-900"
           )}>Today's Calories</h3>
-          <p className="text-3xl font-bold text-blue-600">{todaysNutritionData[0].total_calories}</p>
+          <p className="text-3xl font-bold text-blue-600">{todayData.total_calories}</p>
           <p className={cn(
             "text-sm",
             isDarkMode ? "text-gray-400" : "text-gray-500"
@@ -99,7 +98,7 @@ export function Dashboard() {
             "text-lg font-semibold mb-2",
             isDarkMode ? "text-white" : "text-gray-900"
           )}>Protein Intake</h3>
-          <p className="text-3xl font-bold text-green-600">{todaysNutritionData[0].total_protein}g</p>
+          <p className="text-3xl font-bold text-green-600">{todayData.total_protein}g</p>
           <p className={cn(
             "text-sm",
             isDarkMode ? "text-gray-400" : "text-gray-500"
@@ -113,11 +112,11 @@ export function Dashboard() {
             "text-lg font-semibold mb-2",
             isDarkMode ? "text-white" : "text-gray-900"
           )}>Water Intake</h3>
-          <p className="text-3xl font-bold text-blue-400">{todaysNutritionData[0].total_water}L</p>
+          <p className="text-3xl font-bold text-blue-400">{todayData.total_water}g</p>
           <p className={cn(
             "text-sm",
             isDarkMode ? "text-gray-400" : "text-gray-500"
-          )}>Goal: {myGoals?.total_water_intake ? `${myGoals.total_water_intake}L` : 'N/A'}</p>
+          )}>Goal: {myGoals?.total_water_intake ? `${myGoals.total_water_intake}g` : 'N/A'}</p>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import type { NutritionSnapshot } from '../api/generated/model';
 import { useNutrition } from './useNutrition';
+import { format, parseISO, startOfDay } from 'date-fns';
 
 interface AggregatedNutrition {
   date: string;
@@ -13,11 +14,11 @@ export function useNutritionAggregation(
     user_id: string | null,
     days: number = 7
 ) {
-  const { data, isLoading } = useNutrition(user_id, days);
+  const { data, isLoading, ...rest } = useNutrition(user_id, days);
 
   // Group nutrition data by date
   const aggregatedData = data?.reduce((acc: Record<string, AggregatedNutrition>, snapshot) => {
-    const date = new Date(snapshot.date).toISOString().split('T')[0];
+    const date = format(parseISO(snapshot.date), 'yyyy-MM-dd');
     
     if (!acc[date]) {
       acc[date] = {
@@ -39,11 +40,11 @@ export function useNutritionAggregation(
 
   // Convert to array and sort by date
   const sortedData = Object.values(aggregatedData || {}).sort((a, b) => 
-    new Date(a.date).getTime() - new Date(b.date).getTime()
+    parseISO(a.date).getTime() - parseISO(b.date).getTime()
   );
 
   // Get today's data
-  const today = new Date().toISOString().split('T')[0];
+  const today = format(startOfDay(new Date()), 'yyyy-MM-dd');
   const todayData = aggregatedData?.[today] || {
     date: today,
     total_calories: 0,
@@ -56,5 +57,6 @@ export function useNutritionAggregation(
     data: sortedData,
     todayData,
     isLoading,
+    ...rest,
   };
 } 

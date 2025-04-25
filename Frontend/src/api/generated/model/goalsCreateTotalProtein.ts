@@ -6,6 +6,6 @@
  */
 
 /**
- * The total number of protein to consume in a day
+ * The total number of protein to consume in a day in grams
  */
 export type GoalsCreateTotalProtein = number | null
