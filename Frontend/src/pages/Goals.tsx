@@ -53,7 +53,7 @@ export function Goals() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0">
         <h1 className={cn(
           "text-2xl font-bold",
           isDarkMode ? "text-white" : "text-gray-900"

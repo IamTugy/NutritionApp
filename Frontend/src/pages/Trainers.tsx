@@ -108,9 +108,9 @@ export function Trainers() {
   return (
     <div className="space-y-8">
       <div>
-        <div className="flex justify-between items-center pb-4">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0 pb-4">
           <h1 className={cn(
-        "text-2xl font-bold",
+            "text-2xl font-bold",
             isDarkMode ? "text-white" : "text-gray-900"
           )}>My Trainers</h1>
 

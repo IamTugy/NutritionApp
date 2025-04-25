@@ -42,17 +42,18 @@ export function Nutrition() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className={cn(
-          "text-2xl font-bold",
-          isDarkMode ? "text-white" : "text-gray-900"
-        )}>Nutrition Tracking</h1>
-        {hasTrainees && (
+      <div>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-4 md:space-y-0 pb-4">
+          <h1 className={cn(
+            "text-2xl font-bold",
+            isDarkMode ? "text-white" : "text-gray-900"
+          )}>Nutrition</h1>
+
           <UserSelect
-            selectedUserId={selectedUserId}
             onSelect={(user) => setSelectedUserId(user.user_id)}
+            isAlreadyUser={hasTrainees}
           />
-        )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
