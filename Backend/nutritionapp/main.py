@@ -101,7 +101,7 @@ async def get_nutrition_by_id(user_id: str, nutrition_id: uuid.UUID):
     snapshot = await database.snapshots.find_one({"_id": str(nutrition_id)})
 
     if not snapshot:
-        raise HTTPException(status_code=404, detail="Snapshot not found")
+        return None
     
     return NutritionSnapshot.model_validate(snapshot)
 

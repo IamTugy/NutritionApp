@@ -13,7 +13,7 @@ import { useGetGoalsUserUserIdGoalsGet } from '../api/generated/fastAPI';
 import { useAuth0 } from '@auth0/auth0-react';
 import { LoadingSpinner } from '../components/loading/LoadingSpinner';
 import { useNutritionAggregation } from '@/hooks/useNutritionAggregation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
 import { UserSelect } from '@/components/goals/UserSelect';

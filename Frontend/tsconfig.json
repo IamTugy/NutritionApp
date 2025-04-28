@@ -7,6 +7,14 @@
     "vite.config.js"
   ],
 
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/api/generated/**/*",
+    "**/*.spec.ts",
+    "**/*.test.ts"
+  ],
+
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",

@@ -1,4 +1,5 @@
 import { cn } from '@/utils/tw';
+import { getProfileImageUrl } from '@/utils/image';
 
 interface UserAvatarProps {
   name: string;
@@ -14,15 +15,17 @@ const sizeClasses = {
 };
 
 export function UserAvatar({ name, picture, size = 'md', className }: UserAvatarProps) {
+  const imageUrl = getProfileImageUrl(picture);
+
   return (
     <div className={cn(
       "relative rounded-full overflow-hidden bg-gray-200",
       sizeClasses[size],
       className
     )}>
-      {picture ? (
+      {imageUrl ? (
         <img
-          src={picture}
+          src={imageUrl}
           alt={name}
           className="w-full h-full object-cover"
           onError={(e) => {

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
@@ -7,9 +7,8 @@ import { MealPlateModal } from './meal/MealPlateModal';
 import { useState } from 'react';
 
 export function Navigation() {
-  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout} = useAuth0();
   const { isDarkMode } = useTheme();
-  const navigate = useNavigate();
   const { items } = useMealPlate();
   const [isMealPlateOpen, setIsMealPlateOpen] = useState(false);
 

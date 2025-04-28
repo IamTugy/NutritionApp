@@ -3,7 +3,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useSidebar } from '@/contexts/SidebarContext';
 import { cn } from '@/utils/tw';
 import { useEffect, useRef } from 'react';
-import { Nutrition } from '@/pages/Nutrition';
 import { useTheme } from '@/contexts/ThemeContext';
 
 export function Sidebar() {
