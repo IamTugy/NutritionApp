@@ -5,8 +5,6 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
 
 export function MainLayout({ children }: PropsWithChildren) {
-  console.log(import.meta.env.VITE_AUTH0_DOMAIN);
-  console.log(import.meta.env.VITE_AUTH0_CLIENT_ID);
   const { isDarkMode } = useTheme();
 
   return (

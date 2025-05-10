@@ -15,8 +15,8 @@ declare module '@tanstack/react-router' {
 export function Root() {
   return (
     <Auth0Provider
-      domain={import.meta.env.VITE_AUTH0_DOMAIN}
-      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+      domain="dev-haim44bkrab8ssbi.us.auth0.com"
+      clientId="hsJP493eiRF8ACwWAbfFFyUSUeKCaOUw"
       authorizationParams={{
         redirect_uri: window.location.origin,
       }}
