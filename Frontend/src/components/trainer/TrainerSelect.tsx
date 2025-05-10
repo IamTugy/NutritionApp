@@ -18,7 +18,7 @@ export function TrainerSelect({ onSelect, isAlreadyTrainer }: TrainerSelectProps
   const { isDarkMode } = useTheme();
   const { user } = useAuth0();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { data: potentialTrainers = [], isLoading: isSearching, error } = useAuth0Users(searchQuery);
+  const { data: potentialTrainers = [], isLoading: isSearching, error } = useAuth0Users(searchQuery.length > 2 ? searchQuery : undefined);
 
   const filteredTrainers = potentialTrainers.filter(trainer => trainer.user_id !== user?.sub);
 
@@ -88,6 +88,13 @@ export function TrainerSelect({ onSelect, isAlreadyTrainer }: TrainerSelectProps
             {isSearching ? (
               <div className="flex justify-center p-4">
                 <LoadingSpinner />
+              </div>
+            ) : searchQuery.length < 2 && searchQuery.length > 0 ? (
+              <div className={cn(
+                "px-4 py-2 text-center",
+                isDarkMode ? "text-gray-400" : "text-gray-500"
+              )}>
+                Please enter at least 2 characters
               </div>
             ) : error ? (
               <div className={cn(

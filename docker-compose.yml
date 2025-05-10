@@ -15,22 +15,20 @@ services:
       - nutrition-network
 
   nutrition-backend:
+    env_file:
+      - Backend/.env
     build:
       context: ./Backend
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
-    environment:
-      - HOST=0.0.0.0
-      - PORT=8000
-      - MONGODB_URI=mongodb://root:example@nutrition-mongodb:27017/nutrition_db?authSource=admin
     depends_on:
-      nutrition-mongodb:
+      mongodb:
         condition: service_healthy
     networks:
       - nutrition-network
 
-  nutrition-mongodb:
+  mongodb:
     image: mongo:latest
     container_name: nutrition_mongodb
     ports:

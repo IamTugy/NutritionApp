@@ -2,9 +2,11 @@ import asyncio
 from datetime import datetime, timezone, timedelta
 import uuid
 import uvicorn
-from fastapi import FastAPI, Query, HTTPException, Depends
+from fastapi import FastAPI, Query, HTTPException
+from typing import List, Optional
 
 from .food_external_api import search_nutrition_item, search_nutrition_items
+from .auth0 import get_users as get_auth0_users
 
 from .db import database
 from .models import (
@@ -14,13 +16,7 @@ from .models import (
     NutritionSnapshot,
     NutritionSnapshotCreate,
     TrainerUserRelationship,
-    TrainerUserRelationshipCreate,
 )
-from dotenv import load_dotenv
-
-
-# Load environment variables
-load_dotenv()
 
 # FastAPI instance
 app = FastAPI()
@@ -281,6 +277,14 @@ async def trainer_disconnect_user(trainer_id: str, user_id: str):
         raise HTTPException(status_code=404, detail="Connection not found")
     
     return {"message": "Connection removed successfully"}
+
+@app.get("/users", response_model=List[dict])
+async def get_users(
+    search_query: str | None = Query(None),
+    user_ids: List[str] | None = Query(None)
+):
+    """Fetch users from Auth0 with optional search query or specific user IDs."""
+    return await get_auth0_users(search_query, user_ids)
 
 def start():
     """Starts the FastAPI application."""
