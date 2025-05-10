@@ -5,6 +5,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
 
 export function MainLayout({ children }: PropsWithChildren) {
+  console.log(import.meta.env.VITE_AUTH0_DOMAIN);
+  console.log(import.meta.env.VITE_AUTH0_CLIENT_ID);
   const { isDarkMode } = useTheme();
 
   return (
@@ -15,7 +17,7 @@ export function MainLayout({ children }: PropsWithChildren) {
       <Navbar />
       <div className="flex h-[calc(100vh-64px)]">
         <Sidebar />
-        <main className="flex-1 p-4 overflow-y-scroll">
+        <main className="flex-1 overflow-y-scroll">
           {children}
         </main>
       </div>
