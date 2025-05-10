@@ -13,6 +13,8 @@ declare module '@tanstack/react-router' {
 }
 
 export function Root() {
+  console.log(import.meta.env.VITE_AUTH0_DOMAIN);
+  console.log(import.meta.env.VITE_AUTH0_CLIENT_ID);
   return (
     <Auth0Provider
       domain={import.meta.env.VITE_AUTH0_DOMAIN}
