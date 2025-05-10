@@ -31,7 +31,7 @@ export function Goals() {
   });
 
   if (isLoadingGoals || isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner size="lg" />;
   }
 
   const handleUpdateGoal = (type: 'total_calories' | 'total_protein' | 'total_water_intake', value: number) => {

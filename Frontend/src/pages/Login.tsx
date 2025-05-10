@@ -14,7 +14,7 @@ export function Login() {
   }, [isAuthenticated]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="flex items-center justify-center h-full">
       <div className={cn(
         "max-w-md w-full space-y-8 p-8 rounded-lg shadow-lg",
         isDarkMode ? "bg-gray-800" : "bg-white"

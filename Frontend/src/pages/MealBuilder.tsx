@@ -53,7 +53,7 @@ export function MealBuilder() {
       </div>
 
       {isLoading ? (
-        <LoadingSpinner />
+        <LoadingSpinner size="lg" />
       ) : query.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-12 space-y-6">
           <div className={cn(

@@ -33,7 +33,7 @@ export function Nutrition() {
   };
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner size="lg" />;
   }
 
   const hasTrainees = trainees && trainees.length > 0;

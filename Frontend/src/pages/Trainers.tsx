@@ -2,13 +2,12 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
 import { LoadingSpinner } from '@/components/loading/LoadingSpinner';
-import { useGetUserTrainersUserUserIdTrainersGet, useGetTrainerUsersTrainerTrainerIdUsersGet, useAcceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut, useUserDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete, useTrainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete, useConnectToTrainerUserUserIdConnectTrainerTrainerIdPost } from '@/api/generated/fastAPI';
+import { useGetUserTrainersUserUserIdTrainersGet, useGetTrainerUsersTrainerTrainerIdUsersGet, useAcceptUserConnectionTrainerTrainerIdAcceptUserUserIdPut, useUserDisconnectTrainerUserUserIdDisconnectTrainerTrainerIdDelete, useTrainerDisconnectUserTrainerTrainerIdDisconnectUserUserIdDelete, useConnectToTrainerUserUserIdConnectTrainerTrainerIdPost, useGetUsersUsersGet } from '@/api/generated/fastAPI';
 import { TrainerSelect } from '@/components/trainer/TrainerSelect';
 import { useState, useEffect } from 'react';
 import type { TrainerUserRelationship } from '@/api/generated/model/trainerUserRelationship';
-import { useAuth0Users } from '@/hooks/useAuth0Users';
+import type { Auth0User } from '@/types/auth0';
 import { UserAvatar } from '@/components/common/UserAvatar';
-
 
 interface TrainerWithInfo extends TrainerUserRelationship {
   name: string;
@@ -64,13 +63,17 @@ export function Trainers() {
 
   const trainerUserIds = trainers?.map(t => t.trainer_id) || [];
   const traineeUserIds = trainees?.map(t => t.user_id) || [];
-  const { data: trainerUsers = [] } = useAuth0Users(undefined, trainerUserIds);
-  const { data: traineeUsers = [] } = useAuth0Users(undefined, traineeUserIds);
+  const { data: trainerUsers = [] } = useGetUsersUsersGet({
+    user_ids: trainerUserIds
+  });
+  const { data: traineeUsers = [] } = useGetUsersUsersGet({
+    user_ids: traineeUserIds
+  });
 
   useEffect(() => {
     if (trainers && trainerUsers) {
       const trainersWithInfo = trainers.map(trainer => {
-        const userInfo = trainerUsers.find(u => u.user_id === trainer.trainer_id);
+        const userInfo = (trainerUsers as unknown as Auth0User[]).find(u => u.user_id === trainer.trainer_id);
         return {
           ...trainer,
           name: userInfo?.name || 'Unknown',
@@ -85,7 +88,7 @@ export function Trainers() {
   useEffect(() => {
     if (trainees && traineeUsers) {
       const traineesWithInfo = trainees.map(trainee => {
-        const userInfo = traineeUsers.find(u => u.user_id === trainee.user_id);
+        const userInfo = (traineeUsers as unknown as Auth0User[]).find(u => u.user_id === trainee.user_id);
         return {
           ...trainee,
           name: userInfo?.name || 'Unknown',
@@ -102,7 +105,7 @@ export function Trainers() {
   };
 
   if (isLoadingTrainers || isLoadingTrainees) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner size="lg" />;
   }
 
   return (

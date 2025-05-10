@@ -53,9 +53,9 @@ export function MealPlateModal({ isOpen, onClose }: MealPlateModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-50">
+    <div className="fixed size-full inset-0 bg-black/10 flex items-center justify-center z-50">
       <div className={cn(
-        "w-full h-full md:h-auto md:max-w-2xl md:rounded-lg shadow-lg",
+        "size-full max-h-full md:h-auto md:max-w-2xl md:rounded-lg shadow-lg",
         isDarkMode ? "bg-gray-800" : "bg-white"
       )}>
         <div className="flex justify-between items-center p-4 border-b">

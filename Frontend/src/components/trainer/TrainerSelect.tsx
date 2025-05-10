@@ -2,9 +2,9 @@ import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
 import { LoadingSpinner } from '@/components/loading/LoadingSpinner';
-import { useAuth0Users } from '@/hooks/useAuth0Users';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useGetUsersUsersGet } from '@/api/generated/fastAPI';
 import type { Auth0User } from '@/types/auth0';
 
 interface TrainerSelectProps {
@@ -18,9 +18,11 @@ export function TrainerSelect({ onSelect, isAlreadyTrainer }: TrainerSelectProps
   const { isDarkMode } = useTheme();
   const { user } = useAuth0();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { data: potentialTrainers = [], isLoading: isSearching, error } = useAuth0Users(searchQuery.length > 2 ? searchQuery : undefined);
+  const { data: potentialTrainers = [], isLoading: isSearching, error } = useGetUsersUsersGet({
+    search_query: searchQuery.length >= 3 ? searchQuery : undefined
+  });
 
-  const filteredTrainers = potentialTrainers.filter(trainer => trainer.user_id !== user?.sub);
+  const filteredTrainers = (potentialTrainers as unknown as Auth0User[]).filter(trainer => trainer.user_id !== user?.sub);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -87,7 +89,7 @@ export function TrainerSelect({ onSelect, isAlreadyTrainer }: TrainerSelectProps
           <div className="max-h-60 overflow-y-auto">
             {isSearching ? (
               <div className="flex justify-center p-4">
-                <LoadingSpinner />
+                <LoadingSpinner size="md" />
               </div>
             ) : searchQuery.length < 2 && searchQuery.length > 0 ? (
               <div className={cn(

@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { cn } from '@/utils/tw';
 import { LoadingSpinner } from '@/components/loading/LoadingSpinner';
-import { useAuth0Users } from '@/hooks/useAuth0Users';
 import { UserAvatar } from '@/components/common/UserAvatar';
 import { useAuth0 } from '@auth0/auth0-react';
 import type { Auth0User } from '@/types/auth0';
+import { useGetUsersUsersGet } from '@/api/generated/fastAPI';
 import { useGetTrainerUsersTrainerTrainerIdUsersGet } from '@/api/generated/fastAPI';
 
 interface UserSelectProps {
@@ -19,14 +19,16 @@ export function UserSelect({ onSelect, selectedUserId }: UserSelectProps) {
   const { isDarkMode } = useTheme();
   const { user } = useAuth0();
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { data: potentialUsers = [], isLoading: isSearching, error } = useAuth0Users(searchQuery);
+  const { data: potentialUsers = [], isLoading: isSearching, error } = useGetUsersUsersGet({
+    search_query: searchQuery.length >= 3 ? searchQuery : undefined
+  });
   const { data: trainees = [] } = useGetTrainerUsersTrainerTrainerIdUsersGet(user?.sub || '', {
     status: 'active',
   });
 
   const activeTraineeIds = trainees.map(trainee => trainee.user_id);
 
-  const filteredUsers = potentialUsers
+  const filteredUsers = (potentialUsers as unknown as Auth0User[])
     .filter(potentialUser => 
       potentialUser.user_id === user?.sub || activeTraineeIds.includes(potentialUser.user_id)
     )
@@ -49,7 +51,7 @@ export function UserSelect({ onSelect, selectedUserId }: UserSelectProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const selectedUser = potentialUsers.find(u => u.user_id === selectedUserId) || user;
+  const selectedUser = (potentialUsers as unknown as Auth0User[]).find(u => u.user_id === selectedUserId) || user;
   const isCurrentUser = selectedUser?.user_id === user?.sub;
 
   return (
@@ -113,7 +115,7 @@ export function UserSelect({ onSelect, selectedUserId }: UserSelectProps) {
           <div className="max-h-60 overflow-y-auto">
             {isSearching ? (
               <div className="flex justify-center p-4">
-                <LoadingSpinner />
+                <LoadingSpinner size="md" />
               </div>
             ) : error ? (
               <div className={cn(

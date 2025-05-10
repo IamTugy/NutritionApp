@@ -71,7 +71,7 @@ export function Dashboard() {
   }), [data, myGoals?.total_calories]);
 
   if (isLoading || isLoadingGoals) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner size="lg" />;
   }
 
   const hasTrainees = trainees && trainees.length > 0;
