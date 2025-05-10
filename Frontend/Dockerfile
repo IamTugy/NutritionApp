@@ -27,6 +27,11 @@ COPY . .
 
 # build
 ENV NODE_ENV=production
+# Add environment variables for build
+ARG VITE_AUTH0_DOMAIN
+ARG VITE_AUTH0_CLIENT_ID
+ENV VITE_AUTH0_DOMAIN=$VITE_AUTH0_DOMAIN
+ENV VITE_AUTH0_CLIENT_ID=$VITE_AUTH0_CLIENT_ID
 RUN pnpm run build
 
 # copy production dependencies and source code into final image
