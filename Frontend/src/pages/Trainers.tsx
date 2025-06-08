@@ -63,10 +63,10 @@ export function Trainers() {
 
   const trainerUserIds = trainers?.map(t => t.trainer_id) || [];
   const traineeUserIds = trainees?.map(t => t.user_id) || [];
-  const { data: trainerUsers = [] } = useGetUsersUsersGet({
+  const { data: trainerUsers = [], isLoading: isLoadingTrainerUsers } = useGetUsersUsersGet({
     user_ids: trainerUserIds
   });
-  const { data: traineeUsers = [] } = useGetUsersUsersGet({
+  const { data: traineeUsers = [], isLoading: isLoadingTraineeUsers } = useGetUsersUsersGet({
     user_ids: traineeUserIds
   });
 
@@ -104,7 +104,7 @@ export function Trainers() {
     return trainers?.some(trainer => trainer.trainer_id === userId) || false;
   };
 
-  if (isLoadingTrainers || isLoadingTrainees) {
+  if (isLoadingTrainers || isLoadingTrainees || isLoadingTrainerUsers || isLoadingTraineeUsers) {
     return <LoadingSpinner size="lg" />;
   }
 
