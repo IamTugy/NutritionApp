@@ -75,7 +75,7 @@ async def create_nutrition(user_id: str, snapshot: NutritionSnapshotCreate):
             id=snapshot_id,
             user_id=snapshot.user_id or user_id,
             created_by=user_id,
-            date=datetime.now(timezone.utc),
+            date=snapshot.date or datetime.now(timezone.utc),
             total_calories=sum(item.calories for item in items),
             items=items,
         )

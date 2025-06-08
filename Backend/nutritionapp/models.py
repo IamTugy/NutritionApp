@@ -50,6 +50,10 @@ class NutritionSnapshotCreate(BaseModel):
     user_id: str | None = Field(
         description="The user's unique identifier - allows creating snapshots for other users, after checking permissions"
     )
+    date: datetime.datetime | None = Field(
+        default=None,
+        description="The date and time the snapshot was taken"
+    )
     items: list[str] = Field(description="The list of items consumed in the snapshot")
 
 
