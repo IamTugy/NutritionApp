@@ -1,4 +1,5 @@
 # NutritionApp
+To check the app, please opt in to https://nutrition.tugy.org !
 
 ## Tech Stack
 
